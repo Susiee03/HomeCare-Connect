@@ -1,20 +1,14 @@
 import React from "react";
 import { TouchableOpacity, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import BottomTabNavigator from "../Navigation/BottomTab"; // Import your BottomTabNavigator
-import { useNavigation } from "@react-navigation/native";
+import { auth } from "../Firebase/FirebaseSetup";
 
-const Profile = () => {
-
-
+export default function Profile() {
   return (
-    <View style={{ flex: 1 }}>
-
-
-      <Text>Profile</Text>
+    <View>
+      <Text>{auth.currentUser.uid}</Text>
+      <Text>{auth.currentUser.email}</Text>
     </View>
   );
-};
-
-export default Profile;
+}
 

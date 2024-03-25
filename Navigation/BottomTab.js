@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import StackNavigator from "./StackNavigator";
 import Profile from "../Screens/Profile";
+import Home from "../Screens/Home"
 
 
 const Tab = createBottomTabNavigator();
@@ -10,12 +11,12 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
+          if (route.name === "HomeTab") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -34,8 +35,8 @@ const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen
-        name="Home"
-        component={StackNavigator}
+        name="HomeTab"
+        component={StackNavigator} 
         options={{ headerShown: false }}
       />
       <Tab.Screen

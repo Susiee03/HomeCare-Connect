@@ -1,48 +1,57 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
-import React, { useState,  createContext, useContext } from 'react';
+import React, { useState,  useEffect } from 'react';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./Firebase/FirebaseSetup";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import PublishedTasks from './Screens/PublishedTasks';
-import AcceptedTasks from './Screens/AcceptedTasks';
-import Profile from './Screens/Profile';
-import Home from './Screens/Home'
+import Login from "./Screens/Login";
+import Signup from "./Screens/Signup";
 import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
 
 export default function App() {
-  const Tab = createBottomTabNavigator();
 
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsUserLoggedIn(!!user);
+    });
+
+    return unsubscribe;
+  }, []);
 
   const Stack = createNativeStackNavigator();
-  // function StartRender({navigation}) {
-  //   return <StartScreen 
-  //     navigation = {navigation}
-  //   />
-  // }
-  //console.log(route.params.pageName)
+
+  //console.log(auth)
+  if (isUserLoggedIn) {
   return (
-
-      <NavigationContainer>
-        <Stack.Navigator 
-          // initialRouteName="Start"
-          screenOptions={{
-            //headerStyle: Styles.darkPurple,
-            headerTintColor: "white",
-            headerTitleAlign:"center",
-          }}
-          >
-
+  
+    <NavigationContainer>
+      <Stack.Navigator>
+        
           <Stack.Screen
             name="Home"
             component={Drawer}
-            options={{ title: "HomePage", headerBackTitleVisible: false }} 
+            options={{ headerShown: false }}
           />
-        </Stack.Navigator>
-      </NavigationContainer>
-    //  </ActivitiesProvider>
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
+  } 
+  else {
+    return (
+      <NavigationContainer>
+      <Stack.Navigator>
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </>
+      </Stack.Navigator>
+    </NavigationContainer>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
