@@ -6,10 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/Home";
 import TaskDetails from "../Screens/TaskDetails";
 import Notification from "../Screens/Notification"
-import PostingTask from "../Screens/PostingTask";
 import Review from "../Screens/Review";
-import Profile from "../Screens/Profile";
-import TaskHistory from "../Screens/TaskHistory";
 import PublishedTasks from "../Screens/PublishedTasks";
 import AcceptedTasks from "../Screens/AcceptedTasks";
 
@@ -77,10 +74,10 @@ const StackNavigator = ({ navigation }) => {
       />
  
       <Stack.Screen
-        name="Profile"
-        component={Profile}
+        name="Task Detail"
+        component={TaskDetails}
         options={{
-          title: "Profile",
+          title: "TaskDetails",
           headerLeft: () => (
             <TouchableOpacity
               onPress={handleBackPress}
@@ -91,6 +88,22 @@ const StackNavigator = ({ navigation }) => {
           ),
         }}
       /> 
+      <Stack.Screen
+        name="Review"
+        component={Review}
+        options={{
+          title: "Review",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      /> 
+      
 
     </Stack.Navigator>
   );

@@ -2,8 +2,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import StackNavigator from "./StackNavigator";
-import Profile from "../Screens/Profile";
-import Home from "../Screens/Home"
+import TaskHistory from "../Screens/TaskHistory"
+import AcceptedTasks from "../Screens/AcceptedTasks";
+import PublishedTasks from "../Screens/PublishedTasks";
 
 
 const Tab = createBottomTabNavigator();
@@ -18,9 +19,14 @@ const BottomTabNavigator = () => {
 
           if (route.name === "HomeTab") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "TaskHistory") {
+            iconName = focused ? "list" : "list-outline";
+          } else if (route.name === "PublishedTasks") {
+            iconName = focused ? "push" : "push";
           } 
+          else if (route.name === "AcceptedTasks") {
+            iconName = focused ? "checkbox" : "checkbox";
+          }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -40,8 +46,18 @@ const BottomTabNavigator = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="TaskHistory"
+        component={TaskHistory}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="PublishedTasks"
+        component={PublishedTasks}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="AcceptedTasks"
+        component={AcceptedTasks}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

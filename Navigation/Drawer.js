@@ -6,7 +6,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import BottomTab from "./BottomTab";
-import TaskHistory from "../Screens/TaskHistory";
+import Profile from "../Screens/Profile";
 import AcceptedTask from "../Screens/AcceptedTasks";
 import PublishedTask from "../Screens/PublishedTasks";
 import PostingTask from "../Screens/PostingTask";
@@ -34,22 +34,12 @@ export default function DrawerNavigator (){
       <Drawer.Screen
         name="DrawerHome"
         component={BottomTab}
-        options={{ drawerLabel: "HomePage", title: "" }}
+        options={{ drawerLabel: "HomePage", title: ""}}
       />
       <Drawer.Screen
-        name="TaskHistory"
-        component={TaskHistory}
-        options={{ drawerLabel: "Task History" }}
-      />
-      <Drawer.Screen
-        name="PublishedTask"
-        component={PublishedTask}
-        options={{ drawerLabel: "Published Task" }}
-      />
-     <Drawer.Screen
-        name="AcceptedTask"
-        component={AcceptedTask}
-        options={{ drawerLabel: "Accepted Task" }}
+        name="Profile"
+        component={Profile}
+        options={{ drawerLabel: "Profile" }}
       />
       <Drawer.Screen
         name="PostingTask"
