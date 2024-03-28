@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from "react-native";
 import { auth, db } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
 import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; 
 import ImageManager from "../Components/ImageManager";
+
+const DEFAULT_AVATAR_URI = "assets/download.png";
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -69,41 +71,54 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>User Profile</Text>
-      <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
-      {avatarUri ? (
+      <View style={styles.avatarContainer}>
+        <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
         <Image
-          source={{ uri: avatarUri }}
+          source={{ uri: avatarUri || DEFAULT_AVATAR_URI }}
           style={styles.avatar}
         />
-      ) : null}
+      </View>
       <View style={styles.inputContainer}>
+        <Text style={styles.text}>Username</Text>
         <TextInput 
           placeholder="Username" 
           value={username} 
           onChangeText={setUsername} 
           style={styles.input}
-        />
+        /> 
+        <Text style={styles.text}>Phone Number</Text>
         <TextInput 
           placeholder="Phone Number" 
           value={phoneNumber} 
           onChangeText={setPhoneNumber} 
           style={styles.input}
         />
+        <Text style={styles.text}>Address</Text>
         <TextInput 
           placeholder="Address" 
           value={address} 
           onChangeText={setAddress} 
           style={styles.input}
         />
+        <Text style={styles.text}>Email</Text>
+        <TextInput 
+          placeholder="Email" 
+          value={email} 
+          style={styles.input}
+          editable={false}
+        />
+        <Text style={styles.text}>Rating</Text>
+        <TextInput 
+          placeholder="Rating" 
+          value={rating} 
+          style={styles.input}
+          editable={false}
+        />
       </View>
       <View style={styles.buttonContainer}>
         <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
       </View>
-      <Text style={styles.infoText}>Email: {email}</Text>
-      <Text style={styles.infoText}>Rating: {rating}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Sign Out" onPress={handleLogout} color="#dc3545" />
-      </View>
+
     </View>
   );
 };
@@ -144,6 +159,16 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
+  },
+  avatarContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  text: {
+    color: "#5611A1", 
+    fontSize: 16, 
+    alignSelf: 'flex-start', 
+    marginLeft: 20, 
   },
 });
 
