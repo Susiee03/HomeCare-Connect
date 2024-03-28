@@ -13,18 +13,40 @@ import {
 import { db, auth} from "./FirebaseSetup";
 
 // user published task
-export async function writeTasksToDB(task) {
-    task = {
-      ...task, 
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      user: auth.currentUser.uid,
-    };
-    
-    try {
-      const docRef = await addDoc(collection(db, "publishedTask"), task);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (err) {
-      console.log("writePublishedTaskToDB", err);
-    }
+export async function publishTask(taskFormData) {
+  const task = {
+    ...taskFormData,
+    createdAt: new Date(), 
+    updatedAt: new Date(), 
+    publisherId: auth.currentUser.uid, 
+    status: 'open', 
+  };
+  
+  try {
+    const docRef = await addDoc(collection(db, "publishedTasks"), task);
+    console.log("Published task document written with ID: ", docRef.id);
+  } catch (err) {
+    console.error("Error publishing task to DB", err);
+  }
+}
+
+// User accepts tasks
+export async function acceptTask(taskId) {
+  const acceptTaskInfo = {
+      taskId: taskId, 
+      acceptorId: auth.currentUser.uid, 
+      acceptedAt: new Date(), 
+      status: 'in progress', 
+  };
+  
+  try {
+      const docRef = await addDoc(collection(db, "acceptedTasks"), acceptTaskInfo);
+      console.log("Accepted task document written with ID: ", docRef.id);
+      
+      const taskRef = doc(db, "publishedTasks", taskId);
+      await updateDoc(taskRef, { status: 'in progress', updatedAt: new Date() });
+      console.log("Published task status updated to 'in progress'");
+  } catch (err) {
+      console.error("Error accepting task", err);
+  }
 }
