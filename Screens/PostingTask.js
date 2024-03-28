@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TextInput, Alert } from 'react-native'
 import Label from "../Components/Label"
 import DropDownPicker from 'react-native-dropdown-picker';
 import PressableArea from "../Components/PressableArea"
+import { publishTask } from '../Firebase/FirebaseHelper';
 
 export default function PostingTask({navigation}) {
   const [cost, setCost] = useState("")
@@ -118,24 +119,27 @@ export default function PostingTask({navigation}) {
                 /> 
             </PressableArea>
             <PressableArea 
-                    customizedStyle={styles.pressableSubmitCustom}
-                    areaPressed = {() => {
-                        if (cost === "" || setValue === null || cost < 0 || title === "") {
-                            Alert.alert("Invalid input", "Please check your input values", [
-                                { text: "OK", onPress: () => console.log("OK") },
-                            ]);
-                            return;
-                            }
-                            // let newTask= {
-                            //   title,
-                            //   cost: parseInt(cost),
-                            //   value,
-                            //   address,
-                              
-                            // };
-                            //writeToDB(newActivity)
-                            navigation.goBack();
-                    }}
+                  customizedStyle={styles.pressableSubmitCustom}
+                  areaPressed = {() => {
+                    if (cost === "" || value === null || parseFloat(cost) < 0 || title === "") {
+                      Alert.alert("Invalid input", "Please check your input values", [
+                        { text: "OK", onPress: () => console.log("OK Pressed") },
+                      ]);
+                      return;
+                    }
+                    const taskData = {
+                      title: title,
+                      taskType: value, 
+                      cost: parseFloat(cost),
+                      address: address,
+                    };
+                    publishTask(taskData).then(() => {
+                      navigation.goBack();
+                    }).catch((error) => {
+                      console.error("Publish Task Error:", error);
+                      Alert.alert("Error", "There was a problem publishing the task");
+                    });
+                  }}
                 >
                 <Label
                     content="Save"
