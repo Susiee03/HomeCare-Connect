@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { auth, db } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
-import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; // 假设已实现
+import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; 
+import ImageManager from "../Components/ImageManager";
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [email, setEmail] = useState(auth.currentUser?.email || ""); // 初始设置为当前用户的电子邮件
+  const [email, setEmail] = useState(auth.currentUser?.email || ""); 
   const [rating, setRating] = useState("");
+  const [avatarUri, setAvatarUri] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -36,6 +38,7 @@ const Profile = ({ navigation }) => {
           username,
           phoneNumber,
           address,
+          avatarUri,
         });
         Alert.alert("Profile Updated", "Your profile has been updated successfully.");
       } catch (error) {
@@ -66,6 +69,13 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>User Profile</Text>
+      <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
+      {avatarUri ? (
+        <Image
+          source={{ uri: avatarUri }}
+          style={styles.avatar}
+        />
+      ) : null}
       <View style={styles.inputContainer}>
         <TextInput 
           placeholder="Username" 
@@ -128,6 +138,12 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 16,
     marginTop: 10,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
   },
 });
 
