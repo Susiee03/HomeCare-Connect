@@ -1,23 +1,52 @@
-import React, { Component, useState } from 'react'
-import { Text, View, StyleSheet, TextInput, Alert } from 'react-native'
-import Label from "../Components/Label"
+import React, { useState } from 'react';
+import { View, TextInput, Alert, StyleSheet } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import PressableArea from "../Components/PressableArea"
-import { publishTask } from '../Firebase/FirebaseHelper';
+import PressableArea from "../Components/PressableArea";
+import Label from "../Components/Label";
+import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
 
-export default function PostingTask({navigation}) {
-  const [cost, setCost] = useState("")
-  const [title, setTitle] = useState("")
+export default function PostingTask({ navigation, route }) {
+  const task = route.params?.task;
+  const isEditing = !!task;
+  const [title, setTitle] = useState(task?.title || '');
+  const [cost, setCost] = useState(task?.cost?.toString() || '');
+  const [type, setType] = useState(task?.taskType || null);
+  const [address, setAddress] = useState(task?.address || '');
+
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     {label: 'Daily Cleaning', value: 'Daily Cleaning'},
     {label: 'Deep Cleaning', value: 'Deep Cleaning'},
     {label: 'Move Out Cleaning', value: 'Move Out Cleaning'},
     {label: 'Pet Cleaning', value: 'Pet Cleaning'},
-
   ]);
-  const [address, setAddress] = useState("")
+
+  const handleSubmit = async () => {
+    if (title === '' || type === null || parseFloat(cost) < 0 || address === '') {
+      Alert.alert("Invalid input", "Please check your input values");
+      return;
+    }
+    const taskData = {
+      title,
+      taskType: type,
+      cost: parseFloat(cost),
+      address,
+    };
+
+    try {
+      if (isEditing) {
+        await updateTask(task.id, taskData);
+        Alert.alert("Success", "Task updated successfully");
+      } else {
+        await publishTask(taskData);
+        Alert.alert("Success", "Task published successfully");
+      }
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert("Error", "There was an issue saving the task");
+      console.error("Save Task Error:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>  
