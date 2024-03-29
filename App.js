@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Screens/Login";
 import Signup from "./Screens/Signup";
+import PostingTask from './Screens/PostingTask';
 import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
 
@@ -47,6 +48,7 @@ export default function App() {
           <>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="PostingTask" component={PostingTask} />
           </>
       </Stack.Navigator>
     </NavigationContainer>
