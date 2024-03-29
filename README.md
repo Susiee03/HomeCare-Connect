@@ -10,7 +10,8 @@ A mobile application built using React Native, provide variety of functionalitie
 
 ## Screenshots
 
-(Screenshots placeholder)
+![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/9d7a15f9-d73d-4ac0-9a88-2f1b4090d763)
+
 
 ## Contributions
 
