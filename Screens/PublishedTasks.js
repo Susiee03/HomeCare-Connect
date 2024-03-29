@@ -9,7 +9,7 @@ export default function PublishedTasks({ navigation }) {
 
   useEffect(() => {
     const fetchPublishedTasks = async () => {
-      // 确保用户已登录并获取用户ID
+      
       const userId = auth.currentUser?.uid;
       if (!userId) {
         console.log('No user logged in');
@@ -39,12 +39,11 @@ export default function PublishedTasks({ navigation }) {
   };
 
   const handlePressDetail = (task) => {
-    // 这里我们假设你想要传递整个任务对象到PostingTask页面
-    // 请确保PostingTask页面能够处理传入的任务数据
+
     navigation.navigate('PostingTask', { task });
   };
 
-  // 使用 FlatList 来渲染列表项
+
   const renderItem = ({ item }) => (
     <View style={styles.taskItem}>
       <Text style={styles.taskTitle}>{item.title}</Text>
@@ -54,7 +53,7 @@ export default function PublishedTasks({ navigation }) {
       >
         <Text style={styles.detailButtonText}>Detail</Text>
       </TouchableOpacity>
-      {/* 在这里添加更多想要显示的任务细节 */}
+
     </View>
   );
 
@@ -95,16 +94,14 @@ const styles = StyleSheet.create({
   detailButton: {
     marginTop: 5,
     padding: 10,
-    backgroundColor: 'lightblue', // 选择一个适合你应用的颜色
+    backgroundColor: 'lightblue', 
     borderRadius: 5,
-    // 可以添加更多的样式以匹配你的应用主题
+
   },
   detailButtonText: {
     color: 'white',
     textAlign: 'center',
-    // 添加更多样式以匹配你的应用主题
   },
-  // 添加更多样式来定制你的 UI
 });
 
 
