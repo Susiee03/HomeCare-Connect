@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
 import { auth, db } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
 import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; 
 import ImageManager from "../Components/ImageManager";
+import { Ionicons } from "@expo/vector-icons";
 
 const DEFAULT_AVATAR_URI = "assets/download.png";
 
@@ -68,15 +69,21 @@ const Profile = ({ navigation }) => {
     );
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={{ marginRight: 10 }}>
+          <Ionicons name="log-out" size={24} color="grey" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>User Profile</Text>
       <View style={styles.avatarContainer}>
         <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
-        <Image
-          source={{ uri: avatarUri || DEFAULT_AVATAR_URI }}
-          style={styles.avatar}
-        />
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.text}>Username</Text>
