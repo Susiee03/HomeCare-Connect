@@ -50,3 +50,17 @@ export async function acceptTask(taskId) {
       console.error("Error accepting task", err);
   }
 }
+
+export async function updateTask(taskId, taskUpdates) {
+  const taskRef = doc(db, "publishedTasks", taskId);
+
+  try {
+    await updateDoc(taskRef, {
+      ...taskUpdates,
+      updatedAt: new Date(), 
+    });
+    console.log("Task updated with ID: ", taskId);
+  } catch (err) {
+    console.error("Error updating task", err);
+  }
+}
