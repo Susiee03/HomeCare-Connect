@@ -27,7 +27,7 @@ Developed core functionalities and established the project structure:
 
   - `Published Tasks`: Stores published task details, including title, cost, etc.
   - `Accepted Tasks`: Stores user accepted tasks.
-  - `Reviews`: Stores user reviews with tasks accepted by others and comments.
+  - `Reviews`: Stores user reviews with tasks accepted by others and comments.(To be finished until major functions done).
   - `Users`: Manages user profiles including username, email, location, profile photos, overall rating. implemented CRUD operations for this collection. including create a user, read user's profile by email, update user's profile by email, delete user.
 
 - **Navigation Setup:**
