@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/FirebaseSetup";
+import { writeUserToDB } from "../Firebase/UserInformation";
  
 
 export default function Signup({ navigation }) {
@@ -19,8 +20,16 @@ export default function Signup({ navigation }) {
     }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        //console.log(userCred)
 
-        console.log(userCred)
+        const userData = {
+          email: userCred.user.email,
+          phoneNumber: userCred.user.phoneNumber,
+          photoUrl: userCred.user.photoURL
+        };
+        console.log(userData)
+        await writeUserToDB(userData); 
+
     } catch (err){
         console.log(err.code)
 

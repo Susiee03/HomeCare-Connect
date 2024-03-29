@@ -9,7 +9,7 @@ export default function PublishedTasks({ navigation }) {
 
   useEffect(() => {
     const fetchPublishedTasks = async () => {
-  
+
       const userId = auth.currentUser?.uid;
       if (!userId) {
         console.log('No user logged in');
@@ -39,11 +39,13 @@ export default function PublishedTasks({ navigation }) {
   };
 
   const handlePressDetail = (task) => {
+
    
     navigation.navigate('PostingTask', { task });
   };
 
  
+
   const renderItem = ({ item }) => (
     <View style={styles.taskItem}>
       <Text style={styles.taskTitle}>{item.title}</Text>
@@ -53,7 +55,7 @@ export default function PublishedTasks({ navigation }) {
       >
         <Text style={styles.detailButtonText}>Detail</Text>
       </TouchableOpacity>
-      
+
     </View>
   );
 
@@ -96,14 +98,16 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'lightblue', 
     borderRadius: 5,
-   
+
   },
   detailButtonText: {
     color: 'white',
     textAlign: 'center',
+
    
   },
  
+
 });
 
 
