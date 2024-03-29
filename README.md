@@ -15,8 +15,8 @@ A mobile application built using React Native, provide variety of functionalitie
 ## Contributions
 
 - **Shuyao Yu (Susiee03 - iterator1):** Implemented overall 3 navigator structures and set up pages.
-- **Haidong Xu ():** Worked on Published tasks and Accepted tasks collections.
-- **Zeyuan Hu ():** Worked on Profile collection and Comments collection.
+- **Haidong Xu (Haidong):** Worked on Published tasks and Accepted tasks collections.
+- **Zeyuan Hu (iterator1-jeffrey):** Worked on Profile collection and Comments collection.
 
 ### Iteration 1
 
