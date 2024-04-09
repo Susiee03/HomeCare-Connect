@@ -3,48 +3,52 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup';
+import { deleteTask } from '../Firebase/FirebaseHelper';
 
 export default function PublishedTasks({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const fetchPublishedTasks = async () => {
-
-      const userId = auth.currentUser?.uid;
-      if (!userId) {
-        console.log('No user logged in');
-        return;
-      }
-
-      
-      
-      const q = query(
-        collection(db, 'publishedTasks'),
-        where('publisherId', '==', userId)
-      );
-
-      const querySnapshot = await getDocs(q);
-      const userTasks = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTasks(userTasks);
-    };
-
-    fetchPublishedTasks().catch(console.error);
+    fetchPublishedTasks();
   }, []);
+
+  const fetchPublishedTasks = async () => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
+      console.log('No user logged in');
+      return;
+    }
+
+    const q = query(
+      collection(db, 'publishedTasks'),
+      where('publisherId', '==', userId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const userTasks = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    setTasks(userTasks);
+  };
 
   const handleAddTask = () => {
     navigation.navigate('PostingTask');
   };
 
   const handlePressDetail = (task) => {
-
-   
     navigation.navigate('PostingTask', { task });
   };
 
- 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+      console.log(`Task deleted with ID: ${taskId}`);
+      fetchPublishedTasks();
+    } catch (error) {
+      console.error("Error deleting task", error);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.taskItem}>
@@ -55,7 +59,12 @@ export default function PublishedTasks({ navigation }) {
       >
         <Text style={styles.detailButtonText}>Detail</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity 
+        style={styles.deleteButton} 
+        onPress={() => handleDeleteTask(item.id)}
+      >
+        <Text style={styles.deleteButtonText}>Delete</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -78,6 +87,7 @@ export default function PublishedTasks({ navigation }) {
   );
 }
 
+// 你可能需要根据实际情况调整这些样式
 const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
@@ -98,16 +108,19 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'lightblue', 
     borderRadius: 5,
-
   },
   detailButtonText: {
     color: 'white',
     textAlign: 'center',
-
-   
   },
- 
-
+  deleteButton: {
+    marginTop: 5,
+    padding: 10,
+    backgroundColor: 'red', 
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
 });
-
-
