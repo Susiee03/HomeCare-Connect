@@ -1,13 +1,14 @@
-import React, { Component, useState } from 'react'
-import { Text, View, StyleSheet, TextInput, Alert } from 'react-native'
-import Label from "../Components/Label"
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, TextInput, Alert } from 'react-native';
+import Label from "../Components/Label";
 import DropDownPicker from 'react-native-dropdown-picker';
-import PressableArea from "../Components/PressableArea"
-import { publishTask } from '../Firebase/FirebaseHelper';
+import PressableArea from "../Components/PressableArea";
+import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
 
-export default function PostingTask({navigation}) {
-  const [cost, setCost] = useState("")
-  const [title, setTitle] = useState("")
+export default function PostingTask({ navigation, route }) {
+  const [taskId, setTaskId] = useState(null);
+  const [cost, setCost] = useState("");
+  const [title, setTitle] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -15,9 +16,54 @@ export default function PostingTask({navigation}) {
     {label: 'Deep Cleaning', value: 'Deep Cleaning'},
     {label: 'Move Out Cleaning', value: 'Move Out Cleaning'},
     {label: 'Pet Cleaning', value: 'Pet Cleaning'},
-
   ]);
-  const [address, setAddress] = useState("")
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (route.params?.task) {
+      const task = route.params.task;
+      setTaskId(task.id);
+      setTitle(task.title);
+      setValue(task.taskType);
+      setCost(task.cost.toString());
+      setAddress(task.address);
+    }
+  }, [route.params?.task]);
+
+  const handleSave = () => {
+    if (cost === "" || value === null || parseFloat(cost) < 0 || title === "") {
+      Alert.alert("Invalid input", "Please check your input values", [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+      return;
+    }
+    const taskData = {
+      title: title,
+      taskType: value, 
+      cost: parseFloat(cost),
+      address: address,
+    };
+
+    if (taskId) {
+      updateTask(taskId, taskData)
+        .then(() => {
+          navigation.goBack();
+        })
+        .catch((error) => {
+          console.error("Update Task Error:", error);
+          Alert.alert("Error", "There was a problem updating the task");
+        });
+    } else {
+      publishTask(taskData)
+        .then(() => {
+          navigation.goBack();
+        })
+        .catch((error) => {
+          console.error("Publish Task Error:", error);
+          Alert.alert("Error", "There was a problem publishing the task");
+        });
+    }
+  };
 
   return (
     <View style={styles.container}>  

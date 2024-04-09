@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'; 
 import { db } from '../Firebase/FirebaseSetup';
 
 export default function Home() {
-  const [tasks, setTasks] = useState([]); 
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
+    const tasksCollectionRef = collection(db, 'publishedTasks');
 
-    const fetchTasks = async () => {
-      const tasksCollectionRef = collection(db, 'publishedTasks');
-      const querySnapshot = await getDocs(tasksCollectionRef);
+    const unsubscribe = onSnapshot(tasksCollectionRef, (querySnapshot) => {
       const tasksList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
       setTasks(tasksList);
-    };
+    });
 
-    fetchTasks().catch(console.error);
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -37,7 +36,6 @@ export default function Home() {
   );
 }
 
-// 你可能想要添加一些样式
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -58,5 +56,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  
 });
