@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore'; // 导入onSnapshot
 import { db, auth } from '../Firebase/FirebaseSetup';
 import { deleteTask } from '../Firebase/FirebaseHelper';
 
@@ -9,10 +9,6 @@ export default function PublishedTasks({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    fetchPublishedTasks();
-  }, []);
-
-  const fetchPublishedTasks = async () => {
     const userId = auth.currentUser?.uid;
     if (!userId) {
       console.log('No user logged in');
@@ -24,13 +20,18 @@ export default function PublishedTasks({ navigation }) {
       where('publisherId', '==', userId)
     );
 
-    const querySnapshot = await getDocs(q);
-    const userTasks = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    setTasks(userTasks);
-  };
+    // 使用onSnapshot代替getDocs
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const userTasks = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTasks(userTasks);
+    });
+
+    // 清理函数，组件卸载时取消订阅
+    return () => unsubscribe();
+  }, []);
 
   const handleAddTask = () => {
     navigation.navigate('PostingTask');
@@ -44,7 +45,7 @@ export default function PublishedTasks({ navigation }) {
     try {
       await deleteTask(taskId);
       console.log(`Task deleted with ID: ${taskId}`);
-      fetchPublishedTasks();
+      // fetchPublishedTasks(); // 不再需要手动调用fetchPublishedTasks来刷新数据
     } catch (error) {
       console.error("Error deleting task", error);
     }
@@ -87,7 +88,6 @@ export default function PublishedTasks({ navigation }) {
   );
 }
 
-// 你可能需要根据实际情况调整这些样式
 const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
