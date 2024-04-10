@@ -10,7 +10,17 @@ import Signup from "./Screens/Signup";
 import PostingTask from './Screens/PostingTask';
 import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
+import * as Notifications from "expo-notifications";
 
+Notifications.setNotificationHandler({
+  handleNotification: async function (notification) {
+    //marking the function async will make it always return a resolved promise
+    // you could use the info about incoming notification and do different behaviour for different notifications
+    return {
+      shouldShowAlert: true,
+    };
+  },
+});
 export default function App() {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
