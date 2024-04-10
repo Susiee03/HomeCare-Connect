@@ -3,7 +3,7 @@ import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import React, { useState,  useEffect, useRef } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/FirebaseSetup";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigationContainerRef, } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Screens/Login";
 import Signup from "./Screens/Signup";
@@ -25,6 +25,8 @@ export default function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const responseListener = useRef();
   const notificationListener = useRef();
+  const navigationRef = useNavigationContainerRef();
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsUserLoggedIn(!!user);
@@ -41,8 +43,10 @@ export default function App() {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log("push notification");
         if (navigationRef.current) {
-          navigationRef.current.navigate("MainTabs", { screen: "Post" });
+          //navigationRef.current.navigate("MainTabs", { screen: "Post" });
+          console.log("push notification")
         }
       });
 
