@@ -19,10 +19,10 @@ export default function Weather() {
         try {
           let location = await Location.getCurrentPositionAsync({});
           setLocation(location);
-          setLoaded(true); // Set loaded to true after obtaining location
+          setLoaded(true); 
         } catch (error) {
           console.error("Error fetching location:", error);
-          setLoaded(true); // Set loaded to true even in case of error
+          setLoaded(true); 
         }
       };
   
