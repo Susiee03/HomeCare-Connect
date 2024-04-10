@@ -7,6 +7,7 @@ import ImageManager from "../Components/ImageManager";
 import { Ionicons } from "@expo/vector-icons";
 import Notification from "../Components/LocalNotification";
 import LocalNotification from "../Components/LocalNotification";
+import { testPushNotification } from "../Components/PushNotification";
 
 const DEFAULT_AVATAR_URI = "assets/download.png";
 
@@ -163,6 +164,12 @@ const Profile = ({ navigation }) => {
         <Button title="Delete User" onPress={handleDeleteProfile} color="red" />
       </View>
       <LocalNotification />
+      <View>
+      <Button
+        title="Send Push Notification"
+        onPress={testPushNotification}
+      />
+    </View>
     </View>
   );
 };

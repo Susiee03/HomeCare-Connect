@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
-import React, { useState,  useEffect } from 'react';
+import React, { useState,  useEffect, useRef } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/FirebaseSetup";
 import { NavigationContainer } from "@react-navigation/native";
@@ -22,14 +22,36 @@ Notifications.setNotificationHandler({
   },
 });
 export default function App() {
-
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const responseListener = useRef();
+  const notificationListener = useRef();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsUserLoggedIn(!!user);
     });
 
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log("notification listener ", notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        if (navigationRef.current) {
+          navigationRef.current.navigate("MainTabs", { screen: "Post" });
+        }
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
   const Stack = createNativeStackNavigator();

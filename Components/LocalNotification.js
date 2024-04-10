@@ -33,7 +33,7 @@ export default function LocalNotification() {
           body: "We have a new task for you",
         },
         trigger: {
-          hour: 14,
+          hour: 9,
           minute: 0,
           repeats: true,
         },
@@ -45,7 +45,7 @@ export default function LocalNotification() {
   return (
     <View>
       <Button
-        title="Remind me to check out new tasks at 9 am daily "
+        title="Set Reminder"
         onPress={localNotificationHandler}
       />
     </View>
