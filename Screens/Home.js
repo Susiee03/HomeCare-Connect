@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../Firebase/FirebaseSetup';
+
 import { acceptTask } from '../Firebase/FirebaseHelper';
+
+import Weather from "../Components/Weather"
+
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
@@ -31,6 +35,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
+      <Weather />
       <Text style={styles.title}>Published Tasks</Text>
       {tasks.map((task) => (
         <View key={task.id} style={styles.taskContainer}>

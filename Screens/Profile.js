@@ -5,6 +5,7 @@ import { signOut } from "firebase/auth";
 import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; 
 import ImageManager from "../Components/ImageManager";
 import { Ionicons } from "@expo/vector-icons";
+import Notification from "./Notification";
 
 const DEFAULT_AVATAR_URI = "assets/download.png";
 
@@ -125,6 +126,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
       </View>
+      <Notification />
 
     </View>
   );
