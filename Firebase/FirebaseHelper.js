@@ -32,22 +32,30 @@ export async function publishTask(taskFormData) {
 
 // User accepts tasks
 export async function acceptTask(taskId) {
-  const acceptTaskInfo = {
-      taskId: taskId, 
-      acceptorId: auth.currentUser.uid, 
-      acceptedAt: new Date(), 
-      status: 'in progress', 
-  };
-  
   try {
-      const docRef = await addDoc(collection(db, "acceptedTasks"), acceptTaskInfo);
+    const taskRef = doc(db, "publishedTasks", taskId);
+    const taskSnapshot = await getDoc(taskRef);
+
+    if (taskSnapshot.exists()) {
+      const acceptedTaskInfo = {
+        ...taskSnapshot.data(), 
+        acceptorId: auth.currentUser.uid, 
+        acceptedAt: new Date(), 
+        status: 'in progress', 
+      };
+      
+
+      const docRef = await addDoc(collection(db, "acceptedTasks"), acceptedTaskInfo);
       console.log("Accepted task document written with ID: ", docRef.id);
       
-      const taskRef = doc(db, "publishedTasks", taskId);
+  
       await updateDoc(taskRef, { status: 'in progress', updatedAt: new Date() });
       console.log("Published task status updated to 'in progress'");
+    } else {
+      console.log("No such document!");
+    }
   } catch (err) {
-      console.error("Error accepting task", err);
+    console.error("Error accepting task", err);
   }
 }
 
