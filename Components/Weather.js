@@ -61,7 +61,7 @@ export default function Weather() {
           <>
             <View >
               <Text >Current Weather summary: 
-                    You are at {weatherData.name}, it is {weatherData.weather[0].main} now, current temparature is {weatherData.main.temp}˚, 
+                    You are at {weatherData.name}, it is {weatherData.weather[0].main === "Clear" ? "Sunny" : weatherData.weather[0].main} now, current temparature is {weatherData.main.temp}˚, 
                     humidity is {weatherData.main.humidity}%.
               </Text>
             </View>
