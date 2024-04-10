@@ -16,7 +16,7 @@ export default function Home() {
       setTasks(tasksList);
     });
 
-    return () => unsubscribe(); // 清理订阅
+    return () => unsubscribe(); 
   }, []);
 
   const handleAcceptTask = async (taskId) => {
@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     marginTop: 10,
-    backgroundColor: '#4CAF50', // Green background
+    backgroundColor: '#4CAF50', 
     padding: 10,
     borderRadius: 5,
   },
   acceptedButton: {
     marginTop: 10,
-    backgroundColor: '#cccccc', // Grey background, indicating the task is already accepted
+    backgroundColor: '#cccccc', 
     padding: 10,
     borderRadius: 5,
   },
