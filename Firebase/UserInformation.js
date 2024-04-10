@@ -70,9 +70,9 @@ export async function writeUserToDB(data) {
     }
   }
   
-  export async function deleteUserFromDB(id) {
+  export async function deleteUserFromDB(email) {
     try {
-      await deleteDoc(doc(db, "users", id));
+      await deleteDoc(doc(db, "users", email));
     } catch (err) {
       console.log(err);
     }

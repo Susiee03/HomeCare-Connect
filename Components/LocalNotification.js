@@ -2,7 +2,7 @@ import { View, Button, Alert } from "react-native";
 import React from "react";
 import * as Notifications from "expo-notifications";
 
-export default function Notification() {
+export default function LocalNotification() {
   async function verifyPermission() {
     try {
       const status = await Notifications.getPermissionsAsync();
@@ -18,21 +18,25 @@ export default function Notification() {
       console.log(err);
     }
   }
+
   async function localNotificationHandler() {
-    // use await/async and try/catch
     try {
       const havePermission = await verifyPermission();
       if (!havePermission) {
         Alert.alert("You need to give permission for notification");
         return;
       }
-
+  
       const id = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "New Task",
-          body: "We have new task for you",
+          title: "Check New Task",
+          body: "We have a new task for you",
         },
-        trigger: { seconds: 3 },
+        trigger: {
+          hour: 14,
+          minute: 0,
+          repeats: true,
+        },
       });
     } catch (err) {
       console.log(err);
@@ -41,7 +45,7 @@ export default function Notification() {
   return (
     <View>
       <Button
-        title="Remind me to check out new tasks"
+        title="Remind me to check out new tasks at 9 am daily "
         onPress={localNotificationHandler}
       />
     </View>
