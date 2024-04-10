@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, View, StyleSheet } from 'react-native';
-import { collection, getDocs, onSnapshot } from 'firebase/firestore'; 
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../Firebase/FirebaseSetup';
+
+import { acceptTask } from '../Firebase/FirebaseHelper';
+
 import Weather from "../Components/Weather"
+
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const tasksCollectionRef = collection(db, 'publishedTasks');
-
-    const unsubscribe = onSnapshot(tasksCollectionRef, (querySnapshot) => {
+    const unsubscribe = onSnapshot(collection(db, 'publishedTasks'), (querySnapshot) => {
       const tasksList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -18,8 +20,18 @@ export default function Home() {
       setTasks(tasksList);
     });
 
-    return () => unsubscribe();
+    return () => unsubscribe(); 
   }, []);
+
+  const handleAcceptTask = async (taskId) => {
+    try {
+      await acceptTask(taskId);
+      alert('Task accepted successfully!');
+    } catch (error) {
+      console.error('Error accepting task', error);
+      alert('Failed to accept task');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -32,11 +44,24 @@ export default function Home() {
           <Text>Cost: {task.cost}</Text>
           <Text>Address: {task.address}</Text>
           <Text>Status: {task.status}</Text>
+          {task.status === 'in progress' ? (
+            <View style={styles.acceptedButton}>
+              <Text style={styles.acceptButtonText}>Accepted</Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.acceptButton}
+              onPress={() => handleAcceptTask(task.id)}
+            >
+              <Text style={styles.acceptButtonText}>Accept</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ))}
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -57,5 +82,21 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  acceptButton: {
+    marginTop: 10,
+    backgroundColor: '#4CAF50', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  acceptedButton: {
+    marginTop: 10,
+    backgroundColor: '#cccccc', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  acceptButtonText: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
