@@ -160,9 +160,6 @@ const Profile = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Delete User" onPress={handleDeleteProfile} color="red" />
-      </View>
       <LocalNotification />
       <View>
       <Button
