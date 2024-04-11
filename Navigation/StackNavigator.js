@@ -14,16 +14,6 @@ const Stack = createStackNavigator();
 
 const StackNavigator = ({ navigation }) => {
   
-  const handleBackPress = () => {
-    console.log("go back")
-    if (navigation.canGoBack()) {
-        console.log("can go back")
-      navigation.goBack();
-    } else {
-        console.log("cant go back")
-      navigation.navigate("Home");
-    }
-  };
 
   return (
     <Stack.Navigator
@@ -80,7 +70,7 @@ const StackNavigator = ({ navigation }) => {
           title: "TaskDetails",
           headerLeft: () => (
             <TouchableOpacity
-              onPress={handleBackPress}
+              onPress={()=> {navigation.goBack()}}
               style={{ paddingLeft: 20 }}
             >
               <Ionicons name="arrow-back-outline" size={30} color="black" />
@@ -88,21 +78,7 @@ const StackNavigator = ({ navigation }) => {
           ),
         }}
       /> 
-      <Stack.Screen
-        name="Review"
-        component={Review}
-        options={{
-          title: "Review",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={handleBackPress}
-              style={{ paddingLeft: 20 }}
-            >
-              <Ionicons name="arrow-back-outline" size={30} color="black" />
-            </TouchableOpacity>
-          ),
-        }}
-      /> 
+
       
 
     </Stack.Navigator>
