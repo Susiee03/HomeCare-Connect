@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TextInput, Alert } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Alert, ScrollView } from 'react-native';
 import Label from "../Components/Label";
 import DropDownPicker from 'react-native-dropdown-picker';
 import PressableArea from "../Components/PressableArea";
 import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
+import * as Location from 'expo-location';
+import MapView, { Marker } from 'react-native-maps';
 
 export default function PostingTask({ navigation, route }) {
   const [taskId, setTaskId] = useState(null);
@@ -18,8 +20,21 @@ export default function PostingTask({ navigation, route }) {
     {label: 'Pet Cleaning', value: 'Pet Cleaning'},
   ]);
   const [address, setAddress] = useState("");
+  const [location, setLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        return;
+      }
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation.coords);
+      setSelectedLocation(currentLocation.coords);
+    })();
+
     if (route.params?.task) {
       const task = route.params.task;
       setTaskId(task.id);
@@ -31,17 +46,16 @@ export default function PostingTask({ navigation, route }) {
   }, [route.params?.task]);
 
   const handleSave = () => {
-    if (cost === "" || value === null || parseFloat(cost) < 0 || title === "") {
-      Alert.alert("Invalid input", "Please check your input values", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
+    if (cost === "" || value === null || parseFloat(cost) < 0 || title === "" || !selectedLocation) {
+      Alert.alert("Invalid input", "Please check your input values and select a location.");
       return;
     }
     const taskData = {
       title: title,
-      taskType: value, 
+      taskType: value,
       cost: parseFloat(cost),
       address: address,
+      location: selectedLocation,
     };
 
     if (taskId) {
@@ -66,187 +80,76 @@ export default function PostingTask({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>  
-        <View style={styles.label}>
-        <Label
-            content="Type"
-            customizedStyle={{
-              color: "rgb(60,61,132)",
-              fontWeight: "bold",
-              fontSize: 16,
-              marginTop: 20, textAlign: "left"}
-            }
-        />
-        
-        <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            style={{ backgroundColor:  "rgb(144, 142, 179)" }} 
-            containerStyle={ { zIndex: 5000 }}
-        />
-
-          <Label
-                content="Title "
-                customizedStyle={ {
-                marginTop: 20,
-                 textAlign: "left",
-                  color: "rgb(60,61,132)",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                
-              }
-            }
-            />
-            <TextInput
-                style={styles.input}
-                value={title}
-                autoCapitalize="none"
-                onChangeText={setTitle}
-            />
-
-            <Label
-                content="Cost "
-                customizedStyle={ {
-                marginTop: 20,
-                 textAlign: "left",
-                  color: "rgb(60,61,132)",
-                  fontWeight: "bold",
-                  fontSize: 16,
-                
-              }
-            }
-            />
-            <TextInput
-                style={styles.input}
-                value={cost}
-                autoCapitalize="none"
-                onChangeText={setCost}
-            />
-
-            <Label
-                content="Address"
-                customizedStyle={ {
-                    marginTop: 20, 
-                    textAlign: "left",
-                    color: "rgb(60,61,132)",
-                    fontWeight: "bold",
-                    fontSize: 16,
-                  
-                }
-              }
-                />
-            <TextInput style={styles.input}
-                value={address}
-                autoCapitalize="none"
-                onChangeText={setAddress} >
-            </TextInput>
-
-
-
-        <View style={styles.rowContainer}>  
-            <PressableArea 
-                customizedStyle={styles.pressableCancelCustom}
-                areaPressed={() => {
-                        navigation.goBack();
-                    }}  
-                     >  
-                <Label
-                    content="Cancel"
-                    customizedStyle={
-                        {marginTop: 5,     
-                        color: "white",
-                        fontWeight: "bold",
-                        fontSize: 16,}
-                        }
-                /> 
-            </PressableArea>
-            <PressableArea 
-                  customizedStyle={styles.pressableSubmitCustom}
-                  areaPressed = {() => {
-                    if (cost === "" || value === null || parseFloat(cost) < 0 || title === "") {
-                      Alert.alert("Invalid input", "Please check your input values", [
-                        { text: "OK", onPress: () => console.log("OK Pressed") },
-                      ]);
-                      return;
-                    }
-                    const taskData = {
-                      title: title,
-                      taskType: value, 
-                      cost: parseFloat(cost),
-                      address: address,
-                    };
-                    publishTask(taskData).then(() => {
-                      navigation.goBack();
-                    }).catch((error) => {
-                      console.error("Publish Task Error:", error);
-                      Alert.alert("Error", "There was a problem publishing the task");
-                    });
-                  }}
-                >
-                <Label
-                    content="Save"
-                    customizedStyle={
-                      {marginTop: 5,     
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: 16,}
-                      }
-                /> 
-            </PressableArea>
-            </View>
-        </View>
-    </View>
-);
+    <ScrollView style={styles.container}>
+      <Label content="Type" customizedStyle={styles.labelStyle} />
+      <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} style={styles.dropDownPicker} containerStyle={styles.dropDownContainer} />
+      <Label content="Title" customizedStyle={styles.labelStyle} />
+      <TextInput style={styles.input} value={title} onChangeText={setTitle} />
+      <Label content="Cost" customizedStyle={styles.labelStyle} />
+      <TextInput style={styles.input} value={cost} onChangeText={setCost} keyboardType="numeric" />
+      <Label content="Address" customizedStyle={styles.labelStyle} />
+      <TextInput style={styles.input} value={address} onChangeText={setAddress} />
+      {location && (
+        <MapView style={styles.map} initialRegion={{...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421}} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
+          {selectedLocation && (<Marker coordinate={selectedLocation} />)}
+        </MapView>
+      )}
+      <View style={styles.rowContainer}>
+        <PressableArea customizedStyle={styles.pressableCancelCustom} areaPressed={() => navigation.goBack()}><Label content="Cancel" customizedStyle={styles.buttonLabel} /></PressableArea>
+        <PressableArea customizedStyle={styles.pressableSubmitCustom} areaPressed={handleSave}><Label content="Save" customizedStyle={styles.buttonLabel} /></PressableArea>
+      </View>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgb(154,150,221)",
-    width: '100%', 
-  },
-  label: {
-      fontSize: 18,
-      marginBottom: 10,
-      marginTop: 30,
-      paddingHorizontal: 10,
+    padding: 20,
   },
   input: {
     height: 40,
-    margin: 2,
     borderWidth: 2,
-    borderRadius: 10, 
+    borderRadius: 10,
     padding: 10,
-    color: "rgb(60,61,132)",
-},
-rowContainer: {
-  marginTop: 90,
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-},
-
-pressableCancelCustom: { 
-    marginTop: 30, 
-    width: 120, 
-    height: 40,
-    width: 120,
-    height: 30,
-    backgroundColor:  "red",
-    borderRadius: 5, 
+    marginBottom: 20,
+    backgroundColor: "white",
   },
-
-
-pressableSubmitCustom: 
-  { marginTop: 30, width: 120, height: 40, 
-    width: 120,
-    height: 30,
-    backgroundColor:  "blue",
-    borderRadius: 5,},
-
-
-})
+  map: {
+    width: '100%',
+    height: 300,
+    marginBottom: 20,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  pressableCancelCustom: {
+    backgroundColor: "red",
+    borderRadius: 5,
+    padding: 10,
+  },
+  pressableSubmitCustom: {
+    backgroundColor: "blue",
+    borderRadius: 5,
+    padding: 10,
+  },
+  buttonLabel: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  labelStyle: {
+    marginTop: 20,
+    color: "rgb(60,61,132)",
+    fontWeight: "bold",
+  },
+  dropDownPicker: {
+    backgroundColor: "rgb(144, 142, 179)",
+  },
+  dropDownContainer: {
+    zIndex: 5000,
+    marginBottom: 20,
+  }
+});

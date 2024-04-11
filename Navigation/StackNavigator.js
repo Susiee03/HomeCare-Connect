@@ -74,7 +74,7 @@ const StackNavigator = ({ navigation }) => {
       />
  
       <Stack.Screen
-        name="Task Detail"
+        name="TaskDetails"
         component={TaskDetails}
         options={{
           title: "TaskDetails",
