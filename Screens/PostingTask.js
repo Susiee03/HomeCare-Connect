@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, TextInput, Alert, ScrollView } from 'react-native';
+import { View, TextInput, Button, ScrollView, StyleSheet, Alert } from 'react-native';
 import Label from "../Components/Label";
 import DropDownPicker from 'react-native-dropdown-picker';
 import PressableArea from "../Components/PressableArea";
 import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function PostingTask({ navigation, route }) {
   const [taskId, setTaskId] = useState(null);
@@ -14,10 +15,10 @@ export default function PostingTask({ navigation, route }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    {label: 'Daily Cleaning', value: 'Daily Cleaning'},
-    {label: 'Deep Cleaning', value: 'Deep Cleaning'},
-    {label: 'Move Out Cleaning', value: 'Move Out Cleaning'},
-    {label: 'Pet Cleaning', value: 'Pet Cleaning'},
+    { label: 'Daily Cleaning', value: 'Daily Cleaning' },
+    { label: 'Deep Cleaning', value: 'Deep Cleaning' },
+    { label: 'Move Out Cleaning', value: 'Move Out Cleaning' },
+    { label: 'Pet Cleaning', value: 'Pet Cleaning' },
   ]);
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState(null);
@@ -51,53 +52,52 @@ export default function PostingTask({ navigation, route }) {
       return;
     }
     const taskData = {
-      title: title,
+      title,
       taskType: value,
       cost: parseFloat(cost),
-      address: address,
+      address,
       location: selectedLocation,
     };
 
     if (taskId) {
       updateTask(taskId, taskData)
-        .then(() => {
-          navigation.goBack();
-        })
-        .catch((error) => {
-          console.error("Update Task Error:", error);
-          Alert.alert("Error", "There was a problem updating the task");
-        });
+        .then(() => navigation.goBack())
+        .catch(error => Alert.alert("Error", "There was a problem updating the task"));
     } else {
       publishTask(taskData)
-        .then(() => {
-          navigation.goBack();
-        })
-        .catch((error) => {
-          console.error("Publish Task Error:", error);
-          Alert.alert("Error", "There was a problem publishing the task");
-        });
+        .then(() => navigation.goBack())
+        .catch(error => Alert.alert("Error", "There was a problem publishing the task"));
+    }
+  };
+
+  const locateCurrentPosition = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Permission to access location was denied');
+      return;
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    let addresses = await Location.reverseGeocodeAsync(location.coords);
+    if (addresses.length > 0) {
+      setAddress(`${addresses[0].street}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country}`);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Label content="Type" customizedStyle={styles.labelStyle} />
-      <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} style={styles.dropDownPicker} containerStyle={styles.dropDownContainer} />
-      <Label content="Title" customizedStyle={styles.labelStyle} />
-      <TextInput style={styles.input} value={title} onChangeText={setTitle} />
-      <Label content="Cost" customizedStyle={styles.labelStyle} />
-      <TextInput style={styles.input} value={cost} onChangeText={setCost} keyboardType="numeric" />
-      <Label content="Address" customizedStyle={styles.labelStyle} />
-      <TextInput style={styles.input} value={address} onChangeText={setAddress} />
+      <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} style={styles.dropDownPicker} />
+      <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
+      <TextInput style={styles.input} placeholder="Cost" keyboardType="numeric" value={cost} onChangeText={setCost} />
+      <View style={styles.addressContainer}>
+        <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
+        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={locateCurrentPosition} />
+      </View>
       {location && (
-        <MapView style={styles.map} initialRegion={{...location, latitudeDelta: 0.0922, longitudeDelta: 0.0421}} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
-          {selectedLocation && (<Marker coordinate={selectedLocation} />)}
+        <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
+          {selectedLocation && <Marker coordinate={selectedLocation} />}
         </MapView>
       )}
-      <View style={styles.rowContainer}>
-        <PressableArea customizedStyle={styles.pressableCancelCustom} areaPressed={() => navigation.goBack()}><Label content="Cancel" customizedStyle={styles.buttonLabel} /></PressableArea>
-        <PressableArea customizedStyle={styles.pressableSubmitCustom} areaPressed={handleSave}><Label content="Save" customizedStyle={styles.buttonLabel} /></PressableArea>
-      </View>
+      <Button title="Save Task" onPress={handleSave} />
     </ScrollView>
   );
 }
@@ -105,51 +105,31 @@ export default function PostingTask({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(154,150,221)",
     padding: 20,
   },
   input: {
-    height: 40,
-    borderWidth: 2,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
     padding: 10,
     marginBottom: 20,
-    backgroundColor: "white",
+    borderRadius: 5,
+  },
+  addressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  addressInput: {
+    flex: 1,
+  },
+  locationIcon: {
+    marginLeft: 10,
+  },
+  dropDownPicker: {
+    marginBottom: 20,
   },
   map: {
-    width: '100%',
     height: 300,
     marginBottom: 20,
   },
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  pressableCancelCustom: {
-    backgroundColor: "red",
-    borderRadius: 5,
-    padding: 10,
-  },
-  pressableSubmitCustom: {
-    backgroundColor: "blue",
-    borderRadius: 5,
-    padding: 10,
-  },
-  buttonLabel: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  labelStyle: {
-    marginTop: 20,
-    color: "rgb(60,61,132)",
-    fontWeight: "bold",
-  },
-  dropDownPicker: {
-    backgroundColor: "rgb(144, 142, 179)",
-  },
-  dropDownContainer: {
-    zIndex: 5000,
-    marginBottom: 20,
-  }
 });
