@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Screens/Login";
 import Signup from "./Screens/Signup";
 import PostingTask from './Screens/PostingTask';
+import TaskDetails from './Screens/TaskDetails';
 import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
 import * as Notifications from "expo-notifications";
@@ -85,6 +86,7 @@ export default function App() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />
             <Stack.Screen name="PostingTask" component={PostingTask} />
+            <Stack.Screen name="TaskDetails" component={TaskDetails} />
           </>
       </Stack.Navigator>
     </NavigationContainer>

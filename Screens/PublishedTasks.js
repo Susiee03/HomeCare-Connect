@@ -20,7 +20,6 @@ export default function PublishedTasks({ navigation }) {
       where('publisherId', '==', userId)
     );
 
-    // 使用onSnapshot代替getDocs
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const userTasks = querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -29,7 +28,6 @@ export default function PublishedTasks({ navigation }) {
       setTasks(userTasks);
     });
 
-    // 清理函数，组件卸载时取消订阅
     return () => unsubscribe();
   }, []);
 
@@ -45,7 +43,6 @@ export default function PublishedTasks({ navigation }) {
     try {
       await deleteTask(taskId);
       console.log(`Task deleted with ID: ${taskId}`);
-      // fetchPublishedTasks(); // 不再需要手动调用fetchPublishedTasks来刷新数据
     } catch (error) {
       console.error("Error deleting task", error);
     }

@@ -83,3 +83,29 @@ export async function deleteTask(taskId) {
     console.error("Error deleting task", err);
   }
 }
+
+// User finishes an accepted task
+export async function finishTask(taskId) {
+  try {
+
+    const acceptedTaskRef = doc(db, "acceptedTasks", taskId);
+    const acceptedTaskSnap = await getDoc(acceptedTaskRef);
+
+    if (acceptedTaskSnap.exists()) {
+
+      await addDoc(collection(db, "taskHistory"), {
+        ...acceptedTaskSnap.data(),
+        finishedAt: new Date(), 
+        status: 'completed', 
+      });
+      console.log("Task moved to task history with ID: ", taskId);
+
+      await deleteDoc(acceptedTaskRef);
+      console.log("Task removed from accepted tasks with ID: ", taskId);
+    } else {
+      console.log("No such task in accepted tasks!");
+    }
+  } catch (err) {
+    console.error("Error finishing task", err);
+  }
+}

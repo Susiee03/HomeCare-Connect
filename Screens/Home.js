@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../Firebase/FirebaseSetup';
-
 import { acceptTask } from '../Firebase/FirebaseHelper';
-
 import Weather from "../Components/Weather"
 
-
-export default function Home() {
+export default function Home({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -20,7 +17,7 @@ export default function Home() {
       setTasks(tasksList);
     });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, []);
 
   const handleAcceptTask = async (taskId) => {
@@ -31,6 +28,10 @@ export default function Home() {
       console.error('Error accepting task', error);
       alert('Failed to accept task');
     }
+  };
+
+  const handleViewDetails = (task) => {
+    navigation.navigate('TaskDetails', { task });
   };
 
   return (
@@ -44,11 +45,13 @@ export default function Home() {
           <Text>Cost: {task.cost}</Text>
           <Text>Address: {task.address}</Text>
           <Text>Status: {task.status}</Text>
-          {task.status === 'in progress' ? (
-            <View style={styles.acceptedButton}>
-              <Text style={styles.acceptButtonText}>Accepted</Text>
-            </View>
-          ) : (
+          <TouchableOpacity
+            style={styles.detailButton}
+            onPress={() => handleViewDetails(task)}
+          >
+            <Text style={styles.detailButtonText}>Details</Text>
+          </TouchableOpacity>
+          {task.status !== 'in progress' && (
             <TouchableOpacity
               style={styles.acceptButton}
               onPress={() => handleAcceptTask(task.id)}
@@ -61,7 +64,6 @@ export default function Home() {
     </ScrollView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -85,17 +87,28 @@ const styles = StyleSheet.create({
   },
   acceptButton: {
     marginTop: 10,
-    backgroundColor: '#4CAF50', 
+    backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
   },
   acceptedButton: {
     marginTop: 10,
-    backgroundColor: '#cccccc', 
+    backgroundColor: '#cccccc',
     padding: 10,
     borderRadius: 5,
   },
   acceptButtonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  detailButton: {
+    marginTop: 10,
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  detailButtonText: {
     color: 'white',
     textAlign: 'center',
   },
