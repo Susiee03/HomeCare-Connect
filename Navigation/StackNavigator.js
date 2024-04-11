@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 //import { signOut } from "../firebase/auth";
 import Home from "../Screens/Home";
 import TaskDetails from "../Screens/TaskDetails";
-import Notification from "../Screens/Notification"
+import Notification from "../Components/LocalNotification"
 import Review from "../Screens/Review";
 import PublishedTasks from "../Screens/PublishedTasks";
 import AcceptedTasks from "../Screens/AcceptedTasks";

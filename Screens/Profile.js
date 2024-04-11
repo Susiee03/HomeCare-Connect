@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
 import { auth, db } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
-import { getUserByEmail, updateUserByEmail } from "../Firebase/UserInformation"; 
+import { getUserByEmail, updateUserByEmail, deleteUserFromDB } from "../Firebase/UserInformation"; 
 import ImageManager from "../Components/ImageManager";
 import { Ionicons } from "@expo/vector-icons";
-import Notification from "./Notification";
+import Notification from "../Components/LocalNotification";
+import LocalNotification from "../Components/LocalNotification";
+import { testPushNotification } from "../Components/PushNotification";
 
 const DEFAULT_AVATAR_URI = "assets/download.png";
 
@@ -51,6 +53,38 @@ const Profile = ({ navigation }) => {
       }
     }
   };
+
+
+  const handleDeleteProfile = async () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to permanently delete your account? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+
+              // Assuming deleteUserFromDB is a function that deletes the user data from Firestore
+              await deleteUserFromDB(email);
+              Alert.alert("Account Deleted", "Your account has been successfully deleted.");
+  
+
+              navigation.navigate('Home');
+            } catch (error) {
+              console.error("Error deleting account:", error);
+              Alert.alert("Deletion Error", "There was an error deleting your account.");
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  
+
 
   const handleLogout = () => {
     Alert.alert(
@@ -126,8 +160,13 @@ const Profile = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
       </View>
-      <Notification />
-
+      <LocalNotification />
+      <View>
+      <Button
+        title="Send Push Notification"
+        onPress={testPushNotification}
+      />
+    </View>
     </View>
   );
 };
