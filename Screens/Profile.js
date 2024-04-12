@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
-import { auth, db } from "../Firebase/FirebaseSetup";
+import { auth, db, storage } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
 import { getUserByEmail, updateUserByEmail, deleteUserFromDB } from "../Firebase/UserInformation"; 
 import ImageManager from "../Components/ImageManager";
@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Notification from "../Components/LocalNotification";
 import LocalNotification from "../Components/LocalNotification";
 import { testPushNotification } from "../Components/PushNotification";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const DEFAULT_AVATAR_URI = "assets/download.png";
 
@@ -38,54 +39,56 @@ const Profile = ({ navigation }) => {
   }, [email]);
 
   const handleUpdateProfile = async () => {
-    if (email) {
+    let finalAvatarUri = avatarUri; // 默认使用当前的avatarUri
+  
+    if (email && avatarUri && avatarUri.startsWith("file://")) {
+      // 如果avatarUri是本地文件的URI，先上传到Firebase Storage
       try {
-        await updateUserByEmail(email, {
-          username,
-          phoneNumber,
-          address,
-          avatarUri,
-        });
-        Alert.alert("Profile Updated", "Your profile has been updated successfully.");
+        const uploadUri = await getImageData(avatarUri); // 上传图片并获取URL
+        finalAvatarUri = uploadUri; // 使用上传后的URL
       } catch (error) {
-        console.error("Error updating profile:", error);
-        Alert.alert("Update Error", "There was an error updating your profile.");
+        console.error("Error uploading avatar image:", error);
+        Alert.alert("Upload Error", "There was an error uploading your avatar.");
+        return; // 如果上传失败，终止更新操作
       }
     }
-  };
-
-
-  const handleDeleteProfile = async () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to permanently delete your account? This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-
-              // Assuming deleteUserFromDB is a function that deletes the user data from Firestore
-              await deleteUserFromDB(email);
-              Alert.alert("Account Deleted", "Your account has been successfully deleted.");
   
-
-              navigation.navigate('Home');
-            } catch (error) {
-              console.error("Error deleting account:", error);
-              Alert.alert("Deletion Error", "There was an error deleting your account.");
-            }
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    // 更新用户资料，使用finalAvatarUri作为用户头像的URL
+    try {
+      await updateUserByEmail(email, {
+        username,
+        phoneNumber,
+        address,
+        avatarUri: finalAvatarUri,
+      });
+      Alert.alert("Profile Updated", "Your profile has been updated successfully.");
+      setAvatarUri(finalAvatarUri); // 更新组件状态以反映新的头像URL
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      Alert.alert("Update Error", "There was an error updating your profile.");
+    }
   };
   
 
-
+  async function getImageData(uri) {
+    try {
+      const response = await fetch(uri);
+      const imageBlob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      console.log('imageName:', imageName); // 确保imageName有值
+      console.log('imageRef:', imageRef); // 确保imageRef不是undefined
+      const uploadResult = await uploadBytes(imageRef, imageBlob);
+      console.log('uploadResult:', uploadResult); // 确保uploadResult有效
+      const downloadURL = await getDownloadURL(uploadResult.ref); // 获取并返回图片的URL
+      console.log('Download URL:', downloadURL); 
+      return downloadURL;
+    } catch (err) {
+      console.log(err);
+      throw err; // 将错误抛出，以便调用函数可以捕获并处理
+    }
+  }
+  
   const handleLogout = () => {
     Alert.alert(
       "Confirm Sign Out",
