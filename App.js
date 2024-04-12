@@ -12,6 +12,7 @@ import TaskDetails from './Screens/TaskDetails';
 import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
 import * as Notifications from "expo-notifications";
+import Review from './Screens/Review';
 
 Notifications.setNotificationHandler({
   handleNotification: async function (notification) {

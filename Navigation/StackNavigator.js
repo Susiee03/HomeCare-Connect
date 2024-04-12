@@ -9,6 +9,7 @@ import Notification from "../Components/LocalNotification"
 import Review from "../Screens/Review";
 import PublishedTasks from "../Screens/PublishedTasks";
 import AcceptedTasks from "../Screens/AcceptedTasks";
+import DisplayReview from "../Screens/DisplayReview";
 
 const Stack = createStackNavigator();
 
@@ -79,7 +80,36 @@ const StackNavigator = ({ navigation }) => {
         }}
       /> 
 
-      
+      <Stack.Screen
+        name="Review"
+        component={Review}
+        options={{
+          title: "Review",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={()=> {navigation.goBack()}}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />  
+      <Stack.Screen
+        name="DisplayReview"
+        component={DisplayReview}
+        options={{
+          title: "RDisplayeview",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={()=> {navigation.goBack()}}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
+      />  
 
     </Stack.Navigator>
   );
