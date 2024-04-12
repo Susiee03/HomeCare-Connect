@@ -93,9 +93,11 @@ export default function PostingTask({ navigation, route }) {
         <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={locateCurrentPosition} />
       </View>
       {location && (
+        <>
         <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
           {selectedLocation && <Marker coordinate={selectedLocation} />}
         </MapView>
+        </>
       )}
       <Button title="Save Task" onPress={handleSave} />
     </ScrollView>
