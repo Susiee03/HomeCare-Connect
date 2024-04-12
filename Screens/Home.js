@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../Firebase/FirebaseSetup';
-import { acceptTask } from '../Firebase/FirebaseHelper';
 import Weather from "../Components/Weather"
 
 export default function Home({ navigation }) {
@@ -20,16 +19,6 @@ export default function Home({ navigation }) {
     return () => unsubscribe();
   }, []);
 
-  const handleAcceptTask = async (taskId) => {
-    try {
-      await acceptTask(taskId);
-      alert('Task accepted successfully!');
-    } catch (error) {
-      console.error('Error accepting task', error);
-      alert('Failed to accept task');
-    }
-  };
-
   const handleViewDetails = (task) => {
     navigation.navigate('TaskDetails', { task });
   };
@@ -45,20 +34,9 @@ export default function Home({ navigation }) {
           <Text>Cost: {task.cost}</Text>
           <Text>Address: {task.address}</Text>
           <Text>Status: {task.status}</Text>
-          <TouchableOpacity
-            style={styles.detailButton}
-            onPress={() => handleViewDetails(task)}
-          >
-            <Text style={styles.detailButtonText}>Details</Text>
-          </TouchableOpacity>
-          {task.status !== 'in progress' && (
-            <TouchableOpacity
-              style={styles.acceptButton}
-              onPress={() => handleAcceptTask(task.id)}
-            >
-              <Text style={styles.acceptButtonText}>Accept</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.detailButton}>
+            <Text style={styles.detailButtonText} onPress={() => handleViewDetails(task)}>Details</Text>
+          </View>
         </View>
       ))}
     </ScrollView>

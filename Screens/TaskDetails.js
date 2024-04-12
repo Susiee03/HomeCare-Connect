@@ -14,10 +14,12 @@ const TaskDetails = ({ route }) => {
     if (task.publisherId === currentUserUid) {
       if (task.status === 'in progress') {
         setButtonLabel('Finish Task');
+        console.log(task.id)
         setAction(() => () => finishTask(task.id).then(() => {
-          Alert.alert('Success', 'Task finished successfully');
-          
+          Alert.alert('Success', 'Task closed and moved to history successfully');
         }));
+      } else if (task.status === 'closed') {
+        setButtonLabel('Task Closed');
       } else {
         setButtonLabel('Not accepted yet');
       }
@@ -25,18 +27,29 @@ const TaskDetails = ({ route }) => {
       setButtonLabel('Accept');
       setAction(() => () => acceptTask(task.id).then(() => {
         Alert.alert('Success', 'Task accepted successfully');
-       
         setButtonLabel('Accepted');
       }));
-    } else {
+    } else if (task.status === 'in progress') {
       setButtonLabel('Accepted');
+    } else if (task.status === 'closed') {
+      setButtonLabel('Task Closed');
     }
   }, [task]);
+  
 
   const handlePress = () => {
     action()
-      .catch((error) => Alert.alert('Error', error.message));
+      .then(() => {
+        Alert.alert('Success', 'Task closed and moved to history successfully');
+        // Update local state to reflect changes
+        // 如更新 task 状态或重新获取任务列表
+      })
+      .catch((error) => {
+        Alert.alert('Error', error.message);
+        console.error('Error executing task action:', error);
+      });
   };
+  
 
   return (
     <View style={styles.container}>
