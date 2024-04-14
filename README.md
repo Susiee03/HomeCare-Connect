@@ -10,6 +10,15 @@ A mobile application built using React Native, provide variety of functionalitie
 - appId= "1:534098631112:web:cbc3de827fc442091448fd"
 - WEATHER_API_KEY = "5bd2e0405c5b05e7f1dcda04a58619b5"
 
+## rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
 
 ## Features
 - **Authentication:** User sign-up and login functionality.
