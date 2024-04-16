@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet, Button } from 'react-native';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from '@react-navigation/native';
 
 export default function TaskHistory() {
   const [tasks, setTasks] = useState([]);
-  const navigation = useNavigation(); // Hook to get the navigation object
+  const navigation = useNavigation();
 
   useEffect(() => {
     const userId = auth.currentUser?.uid;
@@ -15,28 +15,35 @@ export default function TaskHistory() {
       return;
     }
 
-    const q = query(collection(db, 'taskHistory'), where('publisherId', '==', userId));
-    const z = query(collection(db, 'taskHistory'), where('acceptorId', '==', userId));
+    const tasksRef = collection(db, 'taskHistory');
+    const acceptorQuery = query(tasksRef, where('acceptorId', '==', userId));
+    const publisherQuery = query(tasksRef, where('publisherId', '==', userId));
 
-    const unsubscribeAccepted = onSnapshot(q, (querySnapshot) => {
-      const acceptedTasks = querySnapshot.docs.map(doc => ({
+    // Create a single listener that handles both queries
+    const handleSnapshot = (querySnapshot, type) => {
+      const fetchedTasks = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        type: 'Accepted' // Distinguish task types
+        type: type // Either 'Accepted' or 'Published'
       }));
-      setTasks(prevTasks => [...prevTasks, ...acceptedTasks]);
-    }, error => {
+
+      setTasks(prevTasks => {
+        // Create a map to avoid duplicates
+        const tasksMap = new Map(prevTasks.map(task => [task.id, task]));
+
+        // Update or add new tasks
+        fetchedTasks.forEach(task => tasksMap.set(task.id, { ...tasksMap.get(task.id), ...task }));
+
+        // Convert the map back to an array
+        return Array.from(tasksMap.values());
+      });
+    };
+
+    const unsubscribeAccepted = onSnapshot(acceptorQuery, snapshot => handleSnapshot(snapshot, 'Accepted'), error => {
       console.error('Failed to fetch accepted tasks:', error);
     });
 
-    const unsubscribePublished = onSnapshot(z, (querySnapshot) => {
-      const publishedTasks = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        type: 'Published' // Distinguish task types
-      }));
-      setTasks(prevTasks => [...prevTasks, ...publishedTasks]);
-    }, error => {
+    const unsubscribePublished = onSnapshot(publisherQuery, snapshot => handleSnapshot(snapshot, 'Published'), error => {
       console.error('Failed to fetch published tasks:', error);
     });
 
@@ -48,10 +55,7 @@ export default function TaskHistory() {
   }, []);
 
   const handleReviewPress = (taskId) => {
-    // Navigate to the Review screen with the taskId as a parameter
-    navigation.navigate("Review", {
-      taskId: taskId,
-    });
+    navigation.navigate("Review", { taskId: taskId });
   };
 
   return (
@@ -66,10 +70,10 @@ export default function TaskHistory() {
           <Text>Status: {task.status}</Text>
           {task.type === 'Published' && (
             task.hasReview ? (
-            <Button
-              title="Review"
-              onPress={() => navigation.navigate("DisplayReview", { taskId: task.id })}
-            />
+              <Button
+                title="Review"
+                onPress={() => navigation.navigate("DisplayReview", { taskId: task.id })}
+              />
             ) : (
               <Button
                 title="Write Review"
@@ -77,7 +81,7 @@ export default function TaskHistory() {
               />
             )
           )}
-          </View>
+        </View>
       ))}
     </ScrollView>
   );
