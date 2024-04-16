@@ -17,24 +17,22 @@ export default function Review({ route, navigation }) {
       Alert.alert('Not Logged In', 'Please log in to submit a review.');
       return;
     }
-
+  
     const reviewData = {
       text: reviewText,
       rating: starCount,
       imageUrl: reviewUri,
-      userId: auth.currentUser.uid, // Associate review with the logged-in user
-      createdAt: new Date() // Optional: handle timestamp on the client-side
+      userId: auth.currentUser.uid,
+      createdAt: new Date()
     };
-
+  
     try {
-      const reviewResult = await writeReviewToDB(reviewData);
+      const reviewResult = await writeReviewToDB(taskId, reviewData);
       if (reviewResult.success) {
-        // Update the task to reflect that it has a review
         const taskRef = doc(db, "taskHistory", taskId);
         await updateDoc(taskRef, {
           hasReview: true
         });
-
         Alert.alert('Success', 'Your review has been submitted successfully!');
         navigation.goBack();
       } else {
@@ -45,6 +43,7 @@ export default function Review({ route, navigation }) {
       Alert.alert('Error', 'Failed to submit the review. Please try again later.');
     }
   };
+  
 
   return (
     <View style={styles.container}>

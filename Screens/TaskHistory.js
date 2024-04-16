@@ -68,9 +68,8 @@ export default function TaskHistory() {
             task.hasReview ? (
             <Button
               title="Review"
-              onPress={() => navigation.navigate("DisplayReview", { reviewId: task.id })}
+              onPress={() => navigation.navigate("DisplayReview", { taskId: task.id })}
             />
-
             ) : (
               <Button
                 title="Write Review"

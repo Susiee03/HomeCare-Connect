@@ -99,7 +99,7 @@ const StackNavigator = ({ navigation }) => {
         name="DisplayReview"
         component={DisplayReview}
         options={{
-          title: "RDisplayeview",
+          title: "Review",
           headerLeft: () => (
             <TouchableOpacity
               onPress={()=> {navigation.goBack()}}

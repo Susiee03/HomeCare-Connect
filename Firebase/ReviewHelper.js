@@ -4,16 +4,13 @@ import {
   } from "firebase/firestore";
   import { db } from "./FirebaseSetup";
 
-  export async function writeReviewToDB(data) {
+  export async function writeReviewToDB(taskId, reviewData) {
     try {
-        const docRef = await addDoc(collection(db, "Review"), {
-            ...data,
-            createdAt: new Date() 
-        });
-        console.log("Document written with ID: ", docRef.id);
-        return { success: true, id: docRef.id, error: null };
-    } catch (err) {
-        console.error("Error adding document: ", err);
-        return { success: false, id: null, error: err };
+      const taskRef = collection(db, "taskHistory", taskId, "reviews");
+      const docRef = await addDoc(taskRef, reviewData);
+      return { success: true, docId: docRef.id };
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      return { success: false, error: error };
     }
-}
+  }
