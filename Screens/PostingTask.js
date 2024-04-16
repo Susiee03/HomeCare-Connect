@@ -70,18 +70,28 @@ export default function PostingTask({ navigation, route }) {
     }
   };
 
-  const locateCurrentPosition = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Permission to access location was denied');
-      return;
+  const locateCurrentPosition = async (selectedCoords) => {
+    if (!selectedCoords) {
+      // Get the current location if selectedCoords is not provided
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      selectedCoords = location.coords;
     }
-    let location = await Location.getCurrentPositionAsync({});
-    let addresses = await Location.reverseGeocodeAsync(location.coords);
+  
+    // Update the selected location
+    setSelectedLocation(selectedCoords);
+  
+    // Reverse geocode to get the address
+    let addresses = await Location.reverseGeocodeAsync(selectedCoords);
     if (addresses.length > 0) {
       setAddress(`${addresses[0].street}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country}`);
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -90,12 +100,13 @@ export default function PostingTask({ navigation, route }) {
       <TextInput style={styles.input} placeholder="Cost" keyboardType="numeric" value={cost} onChangeText={setCost} />
       <View style={styles.addressContainer}>
         <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
-        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={locateCurrentPosition} />
+        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={() => locateCurrentPosition(selectedLocation)} />
       </View>
       {location && (
         <>
         <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
-          {selectedLocation && <Marker coordinate={selectedLocation} />}
+          {selectedLocation && <Marker coordinate={selectedLocation}
+          onPress={() => locateCurrentPosition(selectedLocation)} />}
         </MapView>
         </>
       )}
