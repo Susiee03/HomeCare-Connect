@@ -7,8 +7,8 @@ import {
 } from "@react-navigation/drawer";
 import BottomTab from "./BottomTab";
 import Profile from "../Screens/Profile";
-import AcceptedTask from "../Screens/AcceptedTasks";
-import PublishedTask from "../Screens/PublishedTasks";
+import StackNavigator from "./StackNavigator";
+import DisplayReview from "../Screens/DisplayReview";
 import PostingTask from "../Screens/PostingTask";
 
 const Drawer = createDrawerNavigator();
@@ -33,7 +33,7 @@ export default function DrawerNavigator (){
     >
       <Drawer.Screen
         name="DrawerHome"
-        component={BottomTab}
+        component={StackNavigator}
         options={{ drawerLabel: "HomePage", title: ""}}
       />
       <Drawer.Screen

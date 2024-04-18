@@ -71,10 +71,8 @@ export async function sendPushNotification(expoPushToken) {
 }
 
 export async function testPushNotification() {
-    // 注册推送通知并获取令牌
     const expoPushToken = await registerForPushNotificationsAsync();
   
-    // 如果获取了令牌，尝试发送推送通知
     if (expoPushToken) {
       console.log(`Expo Push Token: ${expoPushToken}`);
       await sendPushNotification(expoPushToken);

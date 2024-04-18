@@ -7,6 +7,7 @@ import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
+//import PressableArea from '../Components/PressableArea';
 
 export default function PostingTask({ navigation, route }) {
   const [taskId, setTaskId] = useState(null);
@@ -70,35 +71,78 @@ export default function PostingTask({ navigation, route }) {
     }
   };
 
-  const locateCurrentPosition = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Permission to access location was denied');
-      return;
+  const locateCurrentPosition = async (selectedCoords) => {
+    if (!selectedCoords) {
+      // Get the current location if selectedCoords is not provided
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      selectedCoords = location.coords;
     }
-    let location = await Location.getCurrentPositionAsync({});
-    let addresses = await Location.reverseGeocodeAsync(location.coords);
+  
+    // Update the selected location
+    setSelectedLocation(selectedCoords);
+  
+    // Reverse geocode to get the address
+    let addresses = await Location.reverseGeocodeAsync(selectedCoords);
     if (addresses.length > 0) {
       setAddress(`${addresses[0].street}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country}`);
     }
   };
+  
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} style={styles.dropDownPicker} />
       <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
       <TextInput style={styles.input} placeholder="Cost" keyboardType="numeric" value={cost} onChangeText={setCost} />
       <View style={styles.addressContainer}>
         <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
-        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={locateCurrentPosition} />
+        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={() => locateCurrentPosition(selectedLocation)} />
       </View>
       {location && (
+        <>
         <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
-          {selectedLocation && <Marker coordinate={selectedLocation} />}
+          {selectedLocation && <Marker coordinate={selectedLocation}
+          onPress={() => locateCurrentPosition(selectedLocation)} />}
         </MapView>
+        </>
       )}
-      <Button title="Save Task" onPress={handleSave} />
-    </ScrollView>
+       <View style={styles.rowContainer}>
+      <PressableArea
+        customizedStyle={styles.pressableSaveCustom}
+          areaPressed={handleSave}
+          >
+          <Label
+              content="Save"
+                customizedStyle={[
+                
+                { marginTop: 5,
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: 16, }
+                ]}
+                        />
+      </PressableArea>
+      <PressableArea
+          customizedStyle={styles.pressableCancelCustom}
+          areaPressed={() => {
+                navigation.goBack();
+                }}
+          >
+          <Label
+              content="Cancel"
+              customizedStyle={{ marginTop: 5 ,     
+                                color: "white",
+                                fontWeight: "bold",
+                                fontSize: 16,}}
+                        />
+      </PressableArea>
+      </View>
+    </View>
   );
 }
 
@@ -129,7 +173,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   map: {
-    height: 300,
+    height: 250,
     marginBottom: 20,
+  },
+
+  pressableCancelCustom: {
+    marginTop: 10, 
+    width: 120, 
+    height: 30,
+    backgroundColor:  "red",
+    borderRadius: 5,
+    
+  },
+
+  pressableSaveCustom: { 
+    marginTop: 10, 
+    width: 120, 
+    height: 30,
+    backgroundColor:  "blue",
+    borderRadius: 5,
+  },
+  halfContainer: {
+    marginTop: 80,
+    width: '90%', 
+    backgroundColor: "rgb(154,150,221)",
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });

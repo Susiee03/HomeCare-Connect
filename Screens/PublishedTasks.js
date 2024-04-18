@@ -55,7 +55,7 @@ export default function PublishedTasks({ navigation }) {
         style={styles.detailButton} 
         onPress={() => handlePressDetail(item)}
       >
-        <Text style={styles.detailButtonText}>Detail</Text>
+        <Text style={styles.detailButtonText}>Edit</Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.deleteButton} 
