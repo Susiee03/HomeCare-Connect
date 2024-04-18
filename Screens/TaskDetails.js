@@ -40,9 +40,7 @@ const TaskDetails = ({ route }) => {
   const handlePress = () => {
     action()
       .then(() => {
-        Alert.alert('Success', 'Task closed and moved to history successfully');
-        // Update local state to reflect changes
-        // 如更新 task 状态或重新获取任务列表
+        
       })
       .catch((error) => {
         Alert.alert('Error', error.message);
