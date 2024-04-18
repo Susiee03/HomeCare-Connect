@@ -1,11 +1,11 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import StackNavigator from "./StackNavigator";
+//import StackNavigator from "./StackNavigator";
 import TaskHistory from "../Screens/TaskHistory"
 import AcceptedTasks from "../Screens/AcceptedTasks";
 import PublishedTasks from "../Screens/PublishedTasks";
-
+import Home from "../Screens/Home";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,8 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen
         name="HomeTab"
-        component={StackNavigator} 
+        component = {Home}
+        //component={StackNavigator} 
         options={{ headerShown: false }}
       />
       <Tab.Screen

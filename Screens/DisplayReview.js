@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../Firebase/FirebaseSetup';  // Adjust the import path as necessary
 
-const DisplayReviews = ({ route }) => {
+const DisplayReviews = ({ route, navigation }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const { taskId } = route.params;
