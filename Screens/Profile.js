@@ -10,8 +10,6 @@ import LocalNotification from "../Components/LocalNotification";
 import { testPushNotification } from "../Components/PushNotification";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const DEFAULT_AVATAR_URI = "assets/download.png";
-
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,6 +27,7 @@ const Profile = ({ navigation }) => {
           setPhoneNumber(userData.phoneNumber || "");
           setAddress(userData.address || "");
           setRating(userData.rating || "No orders yet");
+          setAvatarUri(userData.avatarUri || "");
         } else {
           console.log("No such user found with the email:", email);
         }
@@ -121,8 +120,15 @@ const Profile = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.headerText}>User Profile</Text>
       <View style={styles.avatarContainer}>
-        <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
-      </View>
+          {avatarUri ? (
+            <Image
+              source={{ uri: avatarUri }}
+              style={styles.avatar}
+            />
+          ) : (
+            <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
+          )}
+        </View>
       <View style={styles.inputContainer}>
         <Text style={styles.text}>Username</Text>
         <TextInput 
