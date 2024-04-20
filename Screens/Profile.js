@@ -229,12 +229,6 @@ const Profile = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <LocalNotification />
-      {/* <View>
-      <Button
-        title="Send Push Notification"
-        onPress={testPushNotification}
-      />
-    </View> */}
     </View>
   );
 };
