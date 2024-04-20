@@ -63,11 +63,11 @@ export default function PostingTask({ navigation, route }) {
 
     if (taskId) {
       updateTask(taskId, taskData)
-        .then(() => navigation.goBack())
+        .then(navigation.goBack())
         .catch(error => Alert.alert("Error", "There was a problem updating the task"));
     } else {
       publishTask(taskData)
-        .then(() => navigation.goBack())
+        .then(navigation.goBack())
         .catch(error => Alert.alert("Error", "There was a problem publishing the task"));
     }
   };

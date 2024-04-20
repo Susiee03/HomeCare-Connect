@@ -90,13 +90,13 @@ export default function Review({ route, navigation }) {
       console.log('imageName:', imageName); 
       console.log('imageRef:', imageRef); 
       const uploadResult = await uploadBytes(imageRef, imageBlob);
-      console.log('uploadResult:', uploadResult); // 确保uploadResult有效
-      const downloadURL = await getDownloadURL(uploadResult.ref); // 获取并返回图片的URL
+      console.log('uploadResult:', uploadResult); 
+      const downloadURL = await getDownloadURL(uploadResult.ref); 
       console.log('Download URL:', downloadURL); 
       return downloadURL;
     } catch (err) {
       console.log(err);
-      throw err; // 将错误抛出，以便调用函数可以捕获并处理
+      throw err; 
     }
   }
 
@@ -120,10 +120,29 @@ export default function Review({ route, navigation }) {
         onFinishRating={(rating) => setStarCount(rating)}
         startingValue={starCount}
       />
-      <Button
+      {/* <Button
         title="Submit Review"
         onPress={handleReviewSubmit}
-      />
+      /> */}
+      <PressableArea
+              customizedStyle={{  
+                marginTop: 50, 
+                marginLeft: 100,
+                width: 120, 
+                height: 40,
+                backgroundColor: backgroundColorChoose,
+                borderRadius: 5,
+                
+                }}
+              disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
+              areaPressed={handleReviewSubmit}
+              
+            >
+          <Label
+              content="Submit Review"
+              customizedStyle={[CommonStyles.normalLabel, {fontSize: 24}]}
+                        />
+        </PressableArea>
     </View>
   );
 }

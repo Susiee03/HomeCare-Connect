@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { collection, query, where, onSnapshot } from 'firebase/firestore'; // 导入onSnapshot
 import { db, auth } from '../Firebase/FirebaseSetup';
 import { deleteTask } from '../Firebase/FirebaseHelper';
+import CommonStyles from "../Components/CommonStyles"
+import Label from '../Components/Label';
+import PressableArea from "../Components/PressableArea"
 
 export default function PublishedTasks({ navigation }) {
   const [tasks, setTasks] = useState([]);
@@ -32,37 +35,65 @@ export default function PublishedTasks({ navigation }) {
   }, []);
 
   const handleAddTask = () => {
-    navigation.navigate('PostingTask');
+    navigation.navigate("PostingTask")
   };
 
   const handlePressDetail = (task) => {
     navigation.navigate('PostingTask', { task });
   };
 
-  const handleDeleteTask = async (taskId) => {
-    try {
-      await deleteTask(taskId);
-      console.log(`Task deleted with ID: ${taskId}`);
-    } catch (error) {
-      console.error("Error deleting task", error);
-    }
-  };
 
+  const handleDeleteTask = async (taskId) => {
+    // Display an alert to confirm deletion
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              // Call the deleteTask function if user presses Delete
+              await deleteTask(taskId);
+              console.log(`Task deleted with ID: ${taskId}`);
+            } catch (error) {
+              console.error("Error deleting task", error);
+            }
+          },
+          style: "destructive" 
+        }
+      ],
+      { cancelable: true } // Allow the user to dismiss the alert by tapping outside
+    );
+  };
   const renderItem = ({ item }) => (
     <View style={styles.taskItem}>
       <Text style={styles.taskTitle}>{item.title}</Text>
-      <TouchableOpacity 
-        style={styles.detailButton} 
-        onPress={() => handlePressDetail(item)}
-      >
-        <Text style={styles.detailButtonText}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={styles.deleteButton} 
-        onPress={() => handleDeleteTask(item.id)}
-      >
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
+
+      <View style={styles.rowContainer}>
+        <PressableArea
+          customizedStyle={CommonStyles.pressableSaveCustom}
+            areaPressed={() => handlePressDetail(item)}
+            >
+            <Label
+                content="Edit"
+                  customizedStyle={CommonStyles.normalLabel}
+                          />
+        </PressableArea>
+        <PressableArea
+            customizedStyle={CommonStyles.pressableCancelCustom}
+            areaPressed={() => handleDeleteTask(item.id)}
+            >
+            <Label
+                content="Delete"
+                customizedStyle={CommonStyles.normalLabel}
+                          />
+        </PressableArea>
+      </View>
     </View>
   );
 
@@ -100,24 +131,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  detailButton: {
-    marginTop: 5,
-    padding: 10,
-    backgroundColor: 'lightblue', 
-    borderRadius: 5,
-  },
-  detailButtonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  deleteButton: {
-    marginTop: 5,
-    padding: 10,
-    backgroundColor: 'red', 
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: 'white',
-    textAlign: 'center',
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });
