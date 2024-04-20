@@ -221,13 +221,7 @@ const Profile = ({ navigation }) => {
         </MapView>
         </>
       )}
-        {/* <Text style={styles.text}>Rating</Text>
-        <TextInput 
-          placeholder="Rating" 
-          value={rating} 
-          style={styles.input}
-          editable={false}
-        /> */}
+
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleUpdateProfile} style={styles.button} >
@@ -236,10 +230,7 @@ const Profile = ({ navigation }) => {
       </View>
       <LocalNotification />
       <View>
-      <Button
-        title="Send Push Notification"
-        onPress={testPushNotification}
-      />
+
     </View>
     </View>
   );
