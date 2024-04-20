@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, Alert, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import PressableArea from './PressableArea';
+import CommonStyles from './CommonStyles';
+import Label from './Label';
 
 export default function LocalNotification() {
   const [date, setDate] = useState(new Date());
@@ -81,7 +84,7 @@ export default function LocalNotification() {
 
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={() => setShowPicker(true)}  style={styles.button}>
+      {/* <TouchableOpacity onPress={() => setShowPicker(true)}  style={styles.button}>
       <Text style={styles.buttonText}>Schedule Notification</Text>
       {showPicker && (
         <DateTimePicker
@@ -94,7 +97,27 @@ export default function LocalNotification() {
         />
       )}
       </TouchableOpacity>
-    </View>
+    </View> */}
+    <PressableArea
+      areaPressed={() => setShowPicker(true)}
+      customizedStyle={[CommonStyles.pressableSaveCustom, {width: 180}]}
+    >
+      <Label
+        content="Schedule Notification"
+        customizedStyle={CommonStyles.normalLabel}
+      />
+      {showPicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode="datetime"
+          is24Hour={true}
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+    </PressableArea>
+  </View>
   );
 }
 

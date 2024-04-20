@@ -12,6 +12,9 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+import Label from '../Components/Label';
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -223,12 +226,25 @@ const Profile = ({ navigation }) => {
       )}
 
       </View>
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleUpdateProfile} style={styles.button} >
         <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
-      </View>
-      <LocalNotification />
+      </View> */}
+      <View style={styles.columnContainer}>
+        <PressableArea
+                customizedStyle={CommonStyles.pressableSaveCustom}
+              
+                areaPressed={handleUpdateProfile}
+                
+              >
+            <Label
+                content="Update Profile"
+                  customizedStyle={CommonStyles.normalLabel}
+                          />
+          </PressableArea>
+          <LocalNotification />
+        </View>
     </View>
   );
 };
@@ -315,6 +331,11 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: 200, // Example height
+  },
+  columnContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });
 

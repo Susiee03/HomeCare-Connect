@@ -3,9 +3,6 @@ import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-nati
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup';
 import { useNavigation } from '@react-navigation/native';
-import PressableArea from '../Components/PressableArea';
-import CommonStyles from '../Components/CommonStyles';
-import Label from '../Components/Label';
 import TaskReviewCard from '../Components/TaskReviewCard';
 
 

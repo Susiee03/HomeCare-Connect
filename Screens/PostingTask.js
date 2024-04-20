@@ -113,26 +113,26 @@ export default function PostingTask({ navigation, route }) {
         </>
       )}
        <View style={styles.rowContainer}>
-      <PressableArea
-        customizedStyle={CommonStyles.pressableSaveCustom}
-          areaPressed={handleSave}
-          >
-          <Label
-              content="Save"
-                customizedStyle={CommonStyles.normalLabel}
-                        />
-      </PressableArea>
-      <PressableArea
-          customizedStyle={CommonStyles.pressableCancelCustom}
-          areaPressed={() => {
-                navigation.goBack();
-                }}
-          >
-          <Label
-              content="Cancel"
-              customizedStyle={CommonStyles.normalLabel}
-                        />
-      </PressableArea>
+          <PressableArea
+            customizedStyle={CommonStyles.pressableSaveCustom}
+              areaPressed={handleSave}
+              >
+              <Label
+                  content="Save"
+                    customizedStyle={CommonStyles.normalLabel}
+                            />
+          </PressableArea>
+          <PressableArea
+              customizedStyle={CommonStyles.pressableCancelCustom}
+              areaPressed={() => {
+                    navigation.goBack();
+                    }}
+              >
+              <Label
+                  content="Cancel"
+                  customizedStyle={CommonStyles.normalLabel}
+                            />
+          </PressableArea>
       </View>
     </View>
   );
