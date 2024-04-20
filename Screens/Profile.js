@@ -21,6 +21,7 @@ const Profile = ({ navigation }) => {
   const [rating, setRating] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
   const [location, setLocation] = useState(null);
+  const [userUid, setUserUid] = useState(auth.currentUser?.uid || "");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isUpdatingAvatar, setIsUpdatingAvatar] = useState(false);
 
@@ -229,7 +230,9 @@ const Profile = ({ navigation }) => {
         /> */}
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
+        <TouchableOpacity onPress={handleUpdateProfile} style={styles.button} >
+        <Text style={styles.buttonText}>Update Profile</Text>
+        </TouchableOpacity>
       </View>
       <LocalNotification />
       <View>
@@ -269,6 +272,15 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
+  button: {
+    backgroundColor: '#007bff', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
   infoText: {
     fontSize: 16,
     marginTop: 10,
@@ -292,7 +304,7 @@ const styles = StyleSheet.create({
     padding: 6, // Padding around the icon for better touch area
   },
   text: {
-    color: "#5611A1", 
+    color: "#007bff", 
     fontSize: 16, 
     alignSelf: 'flex-start', 
     marginLeft: 10, 

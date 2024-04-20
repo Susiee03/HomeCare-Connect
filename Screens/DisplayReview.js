@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, StyleSheet, Button, Image } from 'react-native';
 import { collection, query, getDocs } from 'firebase/firestore';
-import { db } from '../Firebase/FirebaseSetup';  // Adjust the import path as necessary
+import { db } from '../Firebase/FirebaseSetup';  
+
 
 const DisplayReviews = ({ route, navigation }) => {
   const [reviews, setReviews] = useState([]);
@@ -41,6 +42,7 @@ const DisplayReviews = ({ route, navigation }) => {
       {reviews.length > 0 ? (
         reviews.map((review) => (
           <View key={review.id} style={styles.reviewContainer}>
+            {review.imageUrl && (<Image source={{ uri: review.imageUrl }} style={styles.image} />)}
             <Text style={styles.reviewText}>Rating: {review.rating}</Text>
             <Text style={styles.reviewText}>Comment: {review.text}</Text>
           </View>
@@ -71,6 +73,11 @@ const styles = StyleSheet.create({
   reviewText: {
     fontSize: 16,
   },
+  image: {
+    width: 100,
+    height: 100,
+
+  }
 });
 
 export default DisplayReviews;

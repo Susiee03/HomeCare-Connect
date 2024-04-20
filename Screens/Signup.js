@@ -30,9 +30,8 @@ export default function Signup({ navigation }) {
 
         const userData = {
           email: userCred.user.email,
-          phoneNumber: userCred.user.phoneNumber,
-          photoUrl: userCred.user.photoURL,
           pushToken: pushToken,
+          userUid: userCred.user.uid,
         };
         console.log(userData)
         await writeUserToDB(userData); 
