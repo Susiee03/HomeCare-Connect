@@ -8,6 +8,10 @@ import { writeReviewToDB } from '../Firebase/ReviewHelper';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { findUserById } from '../Firebase/UserInformation';
 import { sendPushNotification } from '../Components/PushNotification';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+import Label from '../Components/Label';
+
 
 export default function Review({ route, navigation }) {
   const [reviewText, setReviewText] = useState('');
@@ -128,19 +132,18 @@ export default function Review({ route, navigation }) {
               customizedStyle={{  
                 marginTop: 50, 
                 marginLeft: 100,
-                width: 120, 
-                height: 40,
-                backgroundColor: backgroundColorChoose,
+                width: 130, 
+                height: 30,
+                backgroundColor: "blue",
                 borderRadius: 5,
                 
                 }}
-              disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
               areaPressed={handleReviewSubmit}
               
             >
           <Label
               content="Submit Review"
-              customizedStyle={[CommonStyles.normalLabel, {fontSize: 24}]}
+              customizedStyle={CommonStyles.normalLabel}
                         />
         </PressableArea>
     </View>

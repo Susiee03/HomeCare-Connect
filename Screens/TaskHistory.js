@@ -3,6 +3,12 @@ import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-nati
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup';
 import { useNavigation } from '@react-navigation/native';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+import Label from '../Components/Label';
+import TaskReviewCard from '../Components/TaskReviewCard';
+
+
 
 export default function TaskHistory() {
   const [tasks, setTasks] = useState([]);
@@ -90,14 +96,16 @@ export default function TaskHistory() {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Tasks History</Text>
       {tasks.map((task) => (
-        <View key={task.id} style={styles.taskContainer}>
-          <Text style={styles.taskTitle}>{task.title}</Text>
-          <Text>Type: {task.type}</Text>
-          <Text>Cost: {task.cost}</Text>
-          <Text>Address: {task.address}</Text>
-          <Text>Status: {task.status}</Text>
-          <ReviewButton task={task} navigation={navigation} />
-        </View>
+        // <View key={task.id} style={styles.taskContainer}>
+        //   <Text style={styles.taskTitle}>{task.title}</Text>
+        //   <Text>Type: {task.type}</Text>
+        //   <Text>Cost: {task.cost}</Text>
+        //   <Text>Address: {task.address}</Text>
+        //   <Text>Status: {task.status}</Text>
+        //   <ReviewButton task={task} navigation={navigation} />
+        // </View>
+        <TaskReviewCard key={task.id} task={task} navigation={navigation} />
+
       ))}
     </ScrollView>
   );

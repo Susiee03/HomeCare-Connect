@@ -59,13 +59,14 @@ const TaskDetails = ({ route }) => {
       <Text>Cost: ${task.cost}</Text>
       <Text>Address: {task.address}</Text>
       <Text>Status: {task.status}</Text>
+      {/* <TaskCard task={task} handleViewDetails={null} showPressableArea={false} /> */}
       {task.acceptorId && <Text>Accepted By: {task.acceptorId}</Text>}
       
         <PressableArea
               customizedStyle={{  
                 marginTop: 50, 
                 marginLeft: 100,
-                width: 120, 
+                width: 150, 
                 height: 40,
                 backgroundColor: backgroundColorChoose,
                 borderRadius: 5,
