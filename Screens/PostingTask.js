@@ -7,7 +7,8 @@ import { publishTask, updateTask } from '../Firebase/FirebaseHelper';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
-//import PressableArea from '../Components/PressableArea';
+import CommonStyles from "../Components/CommonStyles"
+import Color from "../Components/Color"
 
 export default function PostingTask({ navigation, route }) {
   const [taskId, setTaskId] = useState(null);
@@ -113,32 +114,23 @@ export default function PostingTask({ navigation, route }) {
       )}
        <View style={styles.rowContainer}>
       <PressableArea
-        customizedStyle={styles.pressableSaveCustom}
+        customizedStyle={CommonStyles.pressableSaveCustom}
           areaPressed={handleSave}
           >
           <Label
               content="Save"
-                customizedStyle={[
-                
-                { marginTop: 5,
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: 16, }
-                ]}
+                customizedStyle={CommonStyles.normalLabel}
                         />
       </PressableArea>
       <PressableArea
-          customizedStyle={styles.pressableCancelCustom}
+          customizedStyle={CommonStyles.pressableCancelCustom}
           areaPressed={() => {
                 navigation.goBack();
                 }}
           >
           <Label
               content="Cancel"
-              customizedStyle={{ marginTop: 5 ,     
-                                color: "white",
-                                fontWeight: "bold",
-                                fontSize: 16,}}
+              customizedStyle={CommonStyles.normalLabel}
                         />
       </PressableArea>
       </View>
@@ -177,26 +169,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  pressableCancelCustom: {
-    marginTop: 10, 
-    width: 120, 
-    height: 30,
-    backgroundColor:  "red",
-    borderRadius: 5,
-    
-  },
-
-  pressableSaveCustom: { 
-    marginTop: 10, 
-    width: 120, 
-    height: 30,
-    backgroundColor:  "blue",
-    borderRadius: 5,
-  },
   halfContainer: {
     marginTop: 80,
     width: '90%', 
-    backgroundColor: "rgb(154,150,221)",
+    backgroundColor: Color.backgroundColor,
   },
   rowContainer: {
     flexDirection: 'row',

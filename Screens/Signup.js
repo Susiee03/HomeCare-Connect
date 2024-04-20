@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, ImageBackground } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, ImageBackground, SafeAreaView } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/FirebaseSetup";
 import { writeUserToDB } from "../Firebase/UserInformation";
 import { registerForPushNotificationsAsync } from "../Components/PushNotification";
- 
+import PressableArea from "../Components/PressableArea";
+import CommonStyles from "../Components/CommonStyles";
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
@@ -52,70 +53,187 @@ export default function Signup({ navigation }) {
       else {
         console.log(error.code)
       }
-
     }
   }
 
-  return (
-    <ImageBackground source={require('../assets/sunny.png')} style={styles.background}>
-    <View style={styles.container}>
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={(changedText) => {
-          setEmail(changedText);
-        }}
-      />
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        style={styles.input}
-        secureTextEntry={true}
-        placeholder="Password"
-        value={password}
-        onChangeText={(changedText) => {
-          setPassword(changedText);
-        }}
-      />
-      <Text style={styles.label}>Confirm Password</Text>
-      <TextInput
-        style={styles.input}
-        secureTextEntry={true}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={(changedText) => {
-          setConfirmPassword(changedText);
-        }}
-      />
-      <Button title="Register" onPress={signupHandler} />
-      <Button title="Already Registered? Login" onPress={loginHandler} />
+//   return (
+//     <ImageBackground source={require('../assets/sunny.png')} style={styles.background}>
+//     <View style={styles.container}>
+//       <Text style={styles.label}>Email</Text>
+//       <TextInput
+//         style={styles.input}
+//         placeholder="Email"
+//         value={email}
+//         onChangeText={(changedText) => {
+//           setEmail(changedText);
+//         }}
+//       />
+//       <Text style={styles.label}>Password</Text>
+//       <TextInput
+//         style={styles.input}
+//         secureTextEntry={true}
+//         placeholder="Password"
+//         value={password}
+//         onChangeText={(changedText) => {
+//           setPassword(changedText);
+//         }}
+//       />
+//       <Text style={styles.label}>Confirm Password</Text>
+//       <TextInput
+//         style={styles.input}
+//         secureTextEntry={true}
+//         placeholder="Confirm Password"
+//         value={confirmPassword}
+//         onChangeText={(changedText) => {
+//           setConfirmPassword(changedText);
+//         }}
+//       />
+//       <Button title="Register" onPress={signupHandler} />
+//       <Button title="Already Registered? Login" onPress={loginHandler} />
+//     </View>
+//     </ImageBackground>
+//   );
+// }
+
+return (
+  <ImageBackground source={require('../assets/pxfuel.jpg')}
+  style={styles.background}
+  resizeMode="cover"
+      >
+  <SafeAreaView style={styles.container}>
+    <View style={styles.headerContainer}>
+      <Text style={styles.header}>HomeCare Connect</Text>
     </View>
-    </ImageBackground>
-  );
+      <View >
+        <Text style={styles.text}>Email</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={email}
+            autoCapitalize="none"
+            onChangeText={(emailInput) => {
+              setEmail(emailInput);
+            }}
+          />
+        </View>
+      
+      <View >
+        <Text style={styles.text}>Password</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={password}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            onChangeText={(numberInput) => {
+              setPassword(numberInput);
+            }}
+          />
+        </View>
+      </View>
+
+      <View >
+        <Text style={styles.text}>confirm Password</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={confirmPassword}
+            secureTextEntry={true}
+            autoCapitalize="none"
+            onChangeText={(numberInput) => {
+              setConfirmPassword(numberInput);
+            }}
+          />
+        </View>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <PressableArea
+          areaPressed={signupHandler}
+          customizedStyle={styles.buttonView}
+        >
+          <Text style={styles.buttonText}>Signup</Text>
+        </PressableArea>
+        <PressableArea
+          areaPressed={loginHandler}
+          customizedStyle={styles.buttonView}
+        >
+          <Text style={styles.buttonText}>Already register? Login</Text>
+        </PressableArea>
+      </View>
+    </View>
+  </SafeAreaView>
+</ImageBackground>
+);
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "stretch",
+background: {
+  flex: 1, 
+  justifyContent: 'center', 
+  alignItems: 'center', 
+},
+container: {
+  flex: 1,
+},
+
+headerContainer: {
+  flex: 2,
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+header: {
+  fontSize: 25,
+},
+
+middleContainer: {
+  flex: 5,
+},
+
+inputContainer: {
+  alignItems: "center",
+},
+
+text: {
+  fontSize: 18,
+  marginLeft: "13%",
+  marginTop: 5,
+},
+
+input: {
+  borderBottomWidth: 1,
+  width: "75%",
+  margin: 18,
+  marginBottom: 20,
+  fontSize: 18,
+},
+
+buttonContainer: {
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 40,
+},
+
+itemContainer: {
+  margin: 10,
+},
+
+buttonText: {
+  fontSize: 20,
+  color: "black",
+  fontWeight: "bold",
+},
+
+buttonView: [
+  CommonStyles.lightGreenBackground,
+  {
+    borderRadius: 25,
     justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    width: "100%",
+    marginVertical: 10,
   },
-  input: {
-    borderColor: "#552055",
-    borderWidth: 2,
-    width: "90%",
-    margin: 5,
-    padding: 5,
-  },
-  label: {
-    marginLeft: 10,
-  },
+],
 });
-  

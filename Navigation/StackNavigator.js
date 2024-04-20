@@ -12,6 +12,7 @@ import AcceptedTasks from "../Screens/AcceptedTasks";
 import DisplayReview from "../Screens/DisplayReview";
 import BottomTabNavigator from "./BottomTab";
 import PostingTask from "../Screens/PostingTask";
+import CommonStyles from "../Components/CommonStyles";
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,7 @@ const StackNavigator = ({ navigation }) => {
 
   return (
     <Stack.Navigator
-
+    
     >
       <Stack.Screen
         name="HomeScreen"

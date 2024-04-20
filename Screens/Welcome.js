@@ -1,6 +1,8 @@
 import { View, Text, Button, StyleSheet, Image, ImageBackground } from 'react-native'
 import React from 'react'
-//import PressableButton from '../Components/PressableArea';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+
 
 export default function Welcome({navigation}) {
   return (
@@ -11,9 +13,19 @@ export default function Welcome({navigation}) {
       <Text style={styles.title}>HomeCare Connect</Text>
       <Text style={styles.slogan}>Find the all-in-one solution for household services.</Text>
       <View style={styles.buttonContainer}>
-        <Button title = "Login" onPress={()=>navigation.navigate('Login')} />
-        <Button title = "Signup" onPress={()=>navigation.navigate('Signup')} />
-      </View>
+          <PressableArea
+            areaPressed={()=>{navigation.navigate("Login")}}
+            customizedStyle={styles.buttonView}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </PressableArea>
+          <PressableArea
+            areaPressed={()=>{navigation.navigate("Signup")}}
+            customizedStyle={styles.buttonView}
+          >
+            <Text style={styles.buttonText}>Signup</Text>
+          </PressableArea>
+        </View>
     </ImageBackground>
   )
 }
@@ -26,9 +38,9 @@ const styles = StyleSheet.create({
       },
     container: {
         flex: 1,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
+        // textAlign: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
     },
     title: {
         marginTop: 100,
@@ -38,7 +50,9 @@ const styles = StyleSheet.create({
     },
     slogan: {
         width: 250,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: 30,
+        fontSize: 20,
     },
     button: {
         borderWidth: 1,
@@ -49,9 +63,21 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 20,
-        color: 'black',
-    },
+        color: "black",
+        fontWeight: "bold",
+      },
     buttonContainer: {
-        marginTop: 100,
-    }
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 40,
+    },
+    buttonView: {
+        borderRadius: 25,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 10,
+        width: "100%",
+    },
+      
+
 })

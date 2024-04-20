@@ -14,6 +14,7 @@ import Drawer from "./Navigation/Drawer";
 import * as Notifications from "expo-notifications";
 import Review from './Screens/Review';
 import Welcome from './Screens/Welcome';
+import CommonStyles from './Components/CommonStyles';
 
 Notifications.setNotificationHandler({
   handleNotification: async function (notification) {
@@ -83,11 +84,19 @@ export default function App() {
   else {
     return (
       <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+          screenOptions={{
+            headerStyle: CommonStyles.darkBlue,
+            headerTintColor: "white",
+            headerTitleAlign:"center",
+                  }}
+        >
           <>
             <Stack.Screen name="Welcome" component={Welcome} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Login" component={Login}
+                          options = {{headerBackTitleVisible: false}} />
+            <Stack.Screen name="Signup" component={Signup} 
+                          options = {{headerBackTitleVisible: false}} />
             <Stack.Screen name="PostingTask" component={PostingTask} />
             <Stack.Screen name="TaskDetails" component={TaskDetails} />
           </>
