@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
         marginTop: 100,
         fontSize: 48,
         fontWeight: 800,
+        textAlign: 'center',
     },
     slogan: {
         width: 250,
