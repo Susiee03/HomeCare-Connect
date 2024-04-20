@@ -21,7 +21,7 @@ const Profile = ({ navigation }) => {
   const [rating, setRating] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
   const [location, setLocation] = useState(null);
-  const [userUid, setUserUid] = useState(auth.currentUser?.uid || "");
+  const [userUid, setUserUid] = useState(auth.currentUser?.uid || auth.userUid);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isUpdatingAvatar, setIsUpdatingAvatar] = useState(false);
 
@@ -229,9 +229,12 @@ const Profile = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <LocalNotification />
-      <View>
-
-    </View>
+      {/* <View>
+      <Button
+        title="Send Push Notification"
+        onPress={testPushNotification}
+      />
+    </View> */}
     </View>
   );
 };
