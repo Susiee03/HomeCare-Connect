@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, ImageBackground } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/FirebaseSetup";
 import { writeUserToDB } from "../Firebase/UserInformation";
@@ -17,8 +17,13 @@ export default function Signup({ navigation }) {
 
   const signupHandler = async() => {
     if (!email || !password || !confirmPassword) {
-        console.log("Fill the information as required")
+        Alert.alert("Fill the information as required")
+        return
     }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+  }
     try {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
       
@@ -36,13 +41,23 @@ export default function Signup({ navigation }) {
         console.log(userData)
         await writeUserToDB(userData); 
 
-    } catch (err){
-        console.log(err.code)
+    } catch (error){
+      if (error.code === "auth/invalid-email") {
+        alert("Invalid email");
+      } else if (error.code === "auth/email-already-in-use") {
+        alert("Email already in use");
+      } else if (error.code === "auth/weak-password") {
+        alert("Password must be at least 6 characters");
+      }
+      else {
+        console.log(error.code)
+      }
 
     }
   }
 
   return (
+    <ImageBackground source={require('../assets/sunny.png')} style={styles.background}>
     <View style={styles.container}>
       <Text style={styles.label}>Email</Text>
       <TextInput
@@ -76,10 +91,16 @@ export default function Signup({ navigation }) {
       <Button title="Register" onPress={signupHandler} />
       <Button title="Already Registered? Login" onPress={loginHandler} />
     </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",

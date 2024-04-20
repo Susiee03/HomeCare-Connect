@@ -13,6 +13,7 @@ import {Ionicons} from "@expo/vector-icons";
 import Drawer from "./Navigation/Drawer";
 import * as Notifications from "expo-notifications";
 import Review from './Screens/Review';
+import Welcome from './Screens/Welcome';
 
 Notifications.setNotificationHandler({
   handleNotification: async function (notification) {
@@ -84,6 +85,7 @@ export default function App() {
       <NavigationContainer>
       <Stack.Navigator>
           <>
+            <Stack.Screen name="Welcome" component={Welcome} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />
             <Stack.Screen name="PostingTask" component={PostingTask} />

@@ -18,6 +18,10 @@ export default function Login({ navigation }) {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       console.log(userCred);
     } catch (err) {
+      if(err.code==="auth/invalid-email"){
+        Alert.alert("User does not exist");}
+      if(err.code==="auth/wrong-password"){
+        Alert.alert("Invalid password");}
       console.log(err);
     }
   };
