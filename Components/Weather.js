@@ -92,7 +92,8 @@ export default function Weather() {
 
 const styles = StyleSheet.create({
   weatherContainer: {
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: "#000",
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
     marginHorizontal: 20,
     marginVertical: 10,
   },
@@ -114,28 +115,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   weatherIcon: {
-    width: 50,
-    height: 50,
-  },
-  weatherInfo: {
-    flexDirection: 'column', 
-    justifyContent: 'center', 
+    width: 30,
+    height: 30,
   },
   weatherText: {
-    marginLeft: 10, 
+    marginLeft: 8,
   },
   weatherMain: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   temperatureHumidity: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   temperature: {
-    fontSize: 16,
-    marginRight: 10,
+    fontSize: 14,
+    marginRight: 4,
   },
   humidity: {
-    fontSize: 16,
+    fontSize: 14,
   },
+  
 });
