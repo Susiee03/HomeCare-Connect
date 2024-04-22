@@ -7,7 +7,6 @@ import { db } from '../Firebase/FirebaseSetup';
 import Weather from "../Components/Weather";
 import TaskCard from "../Components/TaskCard"
 
-
 export default function Home({ navigation }) {
   const [tasks, setTasks] = useState([]);
   const [region, setRegion] = useState(null);
@@ -46,46 +45,29 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <Weather />
-      <Text style={styles.title}>Nearby Tasks</Text>
-      {region && (
-        <MapView
-          style={styles.map}
-          region={region}
-          onRegionChangeComplete={setRegion}
-        >
-          {tasks.map((task) => (
-            <Marker
-              key={task.id}
-              coordinate={{ latitude: task.location.latitude, longitude: task.location.longitude }}
-              title={task.title}
-              description={`Type: ${task.taskType} Cost: ${task.cost}`}
-            />
-          ))}
-        </MapView>
-      )}
+      {/* <Text style={styles.title}>Nearby Tasks</Text> */}
+      <MapView
+        style={styles.map}
+        region={region}
+        onRegionChangeComplete={setRegion}
+      >
+        {tasks.map((task) => (
+          <Marker
+            key={task.id}
+            coordinate={{ latitude: task.location.latitude, longitude: task.location.longitude }}
+            title={task.title}
+            description={`Type: ${task.taskType} Cost: ${task.cost}`}
+          />
+        ))}
+      </MapView>
       <ScrollView style={styles.scrollContainer}>
-        {/* {tasks.map((task) => (
-          <View key={task.id} style={styles.taskContainer}>
-            <Text style={styles.taskTitle}>{task.title}</Text>
-            <Text>Type: {task.taskType}</Text>
-            <Text>Cost: {task.cost}</Text>
-            <Text>Address: {task.address}</Text>
-            <Text>Status: {task.status}</Text>
-            <View style={styles.detailButton}>
-              <Text style={styles.detailButtonText} onPress={() => handleViewDetails(task)}>Details</Text>
-            </View>
-          </View>
-        ))} */}
-
         {tasks.map((task) => (
           <TaskCard key={task.id} 
                     task={task} 
                     handleViewDetails={() => handleViewDetails(task)} 
                     showPressableArea={true}
           />
-
         ))}
-
       </ScrollView>
     </View>
   );
@@ -96,8 +78,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    height: 300,
-    width: Dimensions.get('window').width,
+    height: 200, 
+    width: Dimensions.get('window').width - 40, 
+    alignSelf: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginTop: 0,
   },
   scrollContainer: {
     flex: 1,
@@ -107,26 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-  taskContainer: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 5,
-  },
-  taskTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  detailButton: {
-    marginTop: 10,
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  detailButtonText: {
-    color: 'white',
-    textAlign: 'center',
+    textAlign: 'center', 
   },
 });
