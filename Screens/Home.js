@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet, Dimensions } from 'react-native';
 import { collection, onSnapshot } from 'firebase/firestore';
 import * as Location from 'expo-location';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import { db } from '../Firebase/FirebaseSetup';
 import Weather from "../Components/Weather";
-import TaskCard from "../Components/TaskCard"
+import TaskCard from "../Components/TaskCard";
+import PressableArea from "../Components/PressableArea";
 
 export default function Home({ navigation }) {
   const [tasks, setTasks] = useState([]);
@@ -45,7 +46,6 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <Weather />
-      {/* <Text style={styles.title}>Nearby Tasks</Text> */}
       <MapView
         style={styles.map}
         region={region}
@@ -56,15 +56,29 @@ export default function Home({ navigation }) {
             key={task.id}
             coordinate={{ latitude: task.location.latitude, longitude: task.location.longitude }}
             title={task.title}
-            description={`Type: ${task.taskType} Cost: ${task.cost}`}
-          />
+          >
+            <Callout onPress={() => handleViewDetails(task)}>
+              <View style={styles.calloutContainer}>
+                <Text style={styles.detailText}>{task.title}</Text>
+                <Text style={styles.detailText}>Type: {task.taskType}</Text>
+                <Text style={styles.detailText}>Cost: {task.cost}</Text>
+                <PressableArea
+                  areaPressed={() => handleViewDetails(task)}
+                  customizedStyle={styles.pressableButton}
+                  disabled={false}
+                >
+                  <Text style={styles.buttonText}>Details</Text>
+                </PressableArea>
+              </View>
+            </Callout>
+          </Marker>
         ))}
       </MapView>
       <ScrollView style={styles.scrollContainer}>
         {tasks.map((task) => (
-          <TaskCard key={task.id} 
-                    task={task} 
-                    handleViewDetails={() => handleViewDetails(task)} 
+          <TaskCard key={task.id}
+                    task={task}
+                    handleViewDetails={() => handleViewDetails(task)}
                     showPressableArea={true}
           />
         ))}
@@ -78,8 +92,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    height: 200, 
-    width: Dimensions.get('window').width - 40, 
+    height: 200,
+    width: Dimensions.get('window').width - 40,
     alignSelf: 'center',
     borderRadius: 10,
     overflow: 'hidden',
@@ -87,12 +101,29 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    padding: 10,
+    padding: 5,
   },
-  title: {
-    fontSize: 22,
+  calloutContainer: {
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.9)', 
+    padding: 6,
+    alignItems: 'center',
+    maxWidth: 200, 
+  },
+  detailText: {
+    fontSize: 14,
+    color: '#333', 
+  },
+  pressableButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#0066cc', 
+    borderRadius: 4,
+    marginTop: 4,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center', 
   },
 });
