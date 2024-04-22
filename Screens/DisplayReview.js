@@ -21,7 +21,6 @@ const DisplayReviews = ({ route, navigation }) => {
           id: doc.id,
           ...doc.data()
         }));
-        
         setReviews(fetchedReviews);
       } catch (error) {
         console.error('Error fetching reviews:', error);
@@ -39,45 +38,62 @@ const DisplayReviews = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {reviews.length > 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : reviews.length > 0 ? (
         reviews.map((review) => (
           <View key={review.id} style={styles.reviewContainer}>
-            {review.imageUrl && (<Image source={{ uri: review.imageUrl }} style={styles.image} />)}
+            {review.imageUrl && <Image source={{ uri: review.imageUrl }} style={styles.image} />}
             <Text style={styles.reviewText}>Rating: {review.rating}</Text>
             <Text style={styles.reviewText}>Comment: {review.text}</Text>
           </View>
         ))
       ) : (
-        <Text>No reviews found.</Text>
+        <Text style={styles.noReviewsText}>No reviews found.</Text>
       )}
     </ScrollView>
   );
-};
+}  
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    backgroundColor: '#ffffff', 
   },
   reviewContainer: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: '#f8f9fa', 
+    borderRadius: 8,
+    elevation: 2, 
+    borderColor: '#dedede', 
+    borderWidth: 1,
   },
   reviewText: {
     fontSize: 16,
+    color: '#333333', 
+    marginBottom: 5, 
   },
   image: {
-    width: 100,
-    height: 100,
-
+    width: '100%', 
+    height: 200, 
+    borderRadius: 5, 
+    marginBottom: 10, 
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000000', 
+    marginBottom: 10, 
+  },
+  noReviewsText: {
+    fontSize: 18,
+    color: '#606060', 
+    textAlign: 'center', 
+    marginTop: 20, 
   }
 });
+
 
 export default DisplayReviews;
