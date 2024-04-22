@@ -27,17 +27,6 @@ export default function PostingTask({ navigation, route }) {
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Permission to access location was denied');
-        return;
-      }
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation.coords);
-      setSelectedLocation(currentLocation.coords);
-    })();
-
     if (route.params?.task) {
       const task = route.params.task;
       setTaskId(task.id);
@@ -45,6 +34,24 @@ export default function PostingTask({ navigation, route }) {
       setValue(task.taskType);
       setCost(task.cost.toString());
       setAddress(task.address);
+      setSelectedLocation(task.location);
+    } else {
+      setTaskId(null);
+      setTitle("");
+      setValue(null);
+      setCost("");
+      setAddress("");
+      setSelectedLocation(null);
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Denied', 'Permission to access location was denied');
+          return;
+        }
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation(currentLocation.coords);
+        setSelectedLocation(currentLocation.coords);
+      })();
     }
   }, [route.params?.task]);
 
