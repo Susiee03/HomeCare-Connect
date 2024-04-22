@@ -118,7 +118,7 @@ export default function PublishedTasks({ navigation }) {
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     padding: 10,
   },
