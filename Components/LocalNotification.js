@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Button, Alert, Platform } from 'react-native';
+import { View, Text, Alert, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import PressableArea from './PressableArea';
+import CommonStyles from './CommonStyles';
+import Label from './Label';
 
 export default function LocalNotification() {
   const [date, setDate] = useState(new Date());
@@ -53,17 +56,16 @@ export default function LocalNotification() {
   
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShowPicker(Platform.OS === 'ios'); // iOS需要手动关闭时间选择器
+    setShowPicker(Platform.OS === 'ios'); 
   
-    // 立即检查时间有效性，而不是在确认对话框后
+
     const now = new Date();
     if (currentDate <= now) {
-      // 如果选择的时间不晚于当前时间，立即提示用户
+
       Alert.alert('Invalid Time', 'Please choose a future time.');
       return;
     }
-  
-    // 弹出确认对话框
+
     Alert.alert(
       "Confirm Notification Time",
       `Are you sure you want to schedule the notification for ${currentDate.toLocaleString()}?`,
@@ -81,8 +83,9 @@ export default function LocalNotification() {
   
 
   return (
-    <View>
-      <Button title="Schedule Notification" onPress={() => setShowPicker(true)} />
+    <View style={styles.buttonContainer}>
+      {/* <TouchableOpacity onPress={() => setShowPicker(true)}  style={styles.button}>
+      <Text style={styles.buttonText}>Schedule Notification</Text>
       {showPicker && (
         <DateTimePicker
           testID="dateTimePicker"
@@ -93,6 +96,43 @@ export default function LocalNotification() {
           onChange={handleDateChange}
         />
       )}
-    </View>
+      </TouchableOpacity>
+    </View> */}
+    <PressableArea
+      areaPressed={() => setShowPicker(true)}
+      customizedStyle={[CommonStyles.pressableSaveCustom, {width: 180}]}
+    >
+      <Label
+        content="Schedule Notification"
+        customizedStyle={CommonStyles.normalLabel}
+      />
+      {showPicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode="datetime"
+          is24Hour={true}
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+    </PressableArea>
+  </View>
   );
 }
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    width: '100%',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#007bff', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+});

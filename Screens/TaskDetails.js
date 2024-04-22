@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import { auth } from '../Firebase/FirebaseSetup'; 
 import { acceptTask, finishTask } from '../Firebase/FirebaseHelper';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+import Label from '../Components/Label';
 
 const TaskDetails = ({ route }) => {
   const { task } = route.params;
@@ -47,7 +50,7 @@ const TaskDetails = ({ route }) => {
         console.error('Error executing task action:', error);
       });
   };
-  
+  const backgroundColorChoose = buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted' ? "grey" : "blue";
 
   return (
     <View style={styles.container}>
@@ -56,12 +59,34 @@ const TaskDetails = ({ route }) => {
       <Text>Cost: ${task.cost}</Text>
       <Text>Address: {task.address}</Text>
       <Text>Status: {task.status}</Text>
+      {/* <TaskCard task={task} handleViewDetails={null} showPressableArea={false} /> */}
       {task.acceptorId && <Text>Accepted By: {task.acceptorId}</Text>}
-      <Button
+      
+        <PressableArea
+              customizedStyle={{  
+                marginTop: 50, 
+                marginLeft: 100,
+                width: 150, 
+                height: 40,
+                backgroundColor: backgroundColorChoose,
+                borderRadius: 5,
+                
+                }}
+              disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
+              areaPressed={handlePress}
+              
+            >
+          <Label
+              content={buttonLabel}
+                customizedStyle={[CommonStyles.normalLabel, {fontSize: 24}]}
+                        />
+        </PressableArea>
+      {/* <Button
         title={buttonLabel}
         onPress={handlePress}
         disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
-      />
+      /> */}
+     
     </View>
   );
 };

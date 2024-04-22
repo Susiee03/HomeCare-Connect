@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup'; 
+import TaskCard from '../Components/TaskCard';
 
 export default function AcceptedTasks() {
   const [tasks, setTasks] = useState([]);
@@ -32,7 +33,7 @@ export default function AcceptedTasks() {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Accepted Tasks</Text>
-      {tasks.map((task) => (
+      {/* {tasks.map((task) => (
         <View key={task.id} style={styles.taskContainer}>
           <Text style={styles.taskTitle}>{task.title}</Text>
           <Text>Type: {task.taskType}</Text>
@@ -40,7 +41,10 @@ export default function AcceptedTasks() {
           <Text>Address: {task.address}</Text>
           <Text>Status: {task.status}</Text>
         </View>
-      ))}
+      ))} */}
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task}  />
+        ))}
     </ScrollView>
   );
 }

@@ -5,6 +5,8 @@ import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { db } from '../Firebase/FirebaseSetup';
 import Weather from "../Components/Weather";
+import TaskCard from "../Components/TaskCard"
+
 
 export default function Home({ navigation }) {
   const [tasks, setTasks] = useState([]);
@@ -44,7 +46,7 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <Weather />
-      <Text style={styles.title}>Published Tasks</Text>
+      <Text style={styles.title}>Nearby Tasks</Text>
       {region && (
         <MapView
           style={styles.map}
@@ -62,7 +64,7 @@ export default function Home({ navigation }) {
         </MapView>
       )}
       <ScrollView style={styles.scrollContainer}>
-        {tasks.map((task) => (
+        {/* {tasks.map((task) => (
           <View key={task.id} style={styles.taskContainer}>
             <Text style={styles.taskTitle}>{task.title}</Text>
             <Text>Type: {task.taskType}</Text>
@@ -73,7 +75,17 @@ export default function Home({ navigation }) {
               <Text style={styles.detailButtonText} onPress={() => handleViewDetails(task)}>Details</Text>
             </View>
           </View>
+        ))} */}
+
+        {tasks.map((task) => (
+          <TaskCard key={task.id} 
+                    task={task} 
+                    handleViewDetails={() => handleViewDetails(task)} 
+                    showPressableArea={true}
+          />
+
         ))}
+
       </ScrollView>
     </View>
   );

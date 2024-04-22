@@ -9,8 +9,12 @@ import Notification from "../Components/LocalNotification";
 import LocalNotification from "../Components/LocalNotification";
 import { testPushNotification } from "../Components/PushNotification";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-const DEFAULT_AVATAR_URI = "assets/download.png";
+import * as Location from 'expo-location';
+import MapView, { Marker } from 'react-native-maps';
+import { MaterialIcons } from '@expo/vector-icons';
+import PressableArea from '../Components/PressableArea';
+import CommonStyles from '../Components/CommonStyles';
+import Label from '../Components/Label';
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -19,6 +23,10 @@ const Profile = ({ navigation }) => {
   const [email, setEmail] = useState(auth.currentUser?.email || ""); 
   const [rating, setRating] = useState("");
   const [avatarUri, setAvatarUri] = useState("");
+  const [location, setLocation] = useState(null);
+  const [userUid, setUserUid] = useState(auth.currentUser?.uid || auth.userUid);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [isUpdatingAvatar, setIsUpdatingAvatar] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,6 +37,8 @@ const Profile = ({ navigation }) => {
           setPhoneNumber(userData.phoneNumber || "");
           setAddress(userData.address || "");
           setRating(userData.rating || "No orders yet");
+          setAvatarUri(userData.avatarUri || "");
+          setIsUpdatingAvatar(false);
         } else {
           console.log("No such user found with the email:", email);
         }
@@ -107,6 +117,29 @@ const Profile = ({ navigation }) => {
     );
   };
 
+  const locateCurrentPosition = async (selectedCoords) => {
+    if (!selectedCoords) {
+      // Get the current location if selectedCoords is not provided
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      selectedCoords = location.coords;
+    }
+  
+    // Update the selected location
+    setSelectedLocation(selectedCoords);
+  
+    // Reverse geocode to get the address
+    let addresses = await Location.reverseGeocodeAsync(selectedCoords);
+    if (addresses.length > 0) {
+      setAddress(`${addresses[0].street}, ${addresses[0].city}, ${addresses[0].region}, ${addresses[0].country}`);
+    }
+  };
+  
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -117,12 +150,45 @@ const Profile = ({ navigation }) => {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    const getLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied');
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      });
+    };
+    
+    getLocation();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>User Profile</Text>
-      <View style={styles.avatarContainer}>
-        <ImageManager receiveImageURI={(uri) => setAvatarUri(uri)} />
-      </View>
+    <View style={styles.container}>
+      {isUpdatingAvatar || !avatarUri ? (
+        <ImageManager receiveImageURI={(uri) => {
+          setAvatarUri(uri);
+          setIsUpdatingAvatar(false);
+        }} />
+      ) : (
+        <>
+          <Image source={{ uri: avatarUri }} style={styles.avatar} />
+          <TouchableOpacity 
+            style={styles.cameraIcon} 
+            onPress={() => setIsUpdatingAvatar(true)}
+          >
+            <Ionicons name="camera" size={24} color="white" />
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
       <View style={styles.inputContainer}>
         <Text style={styles.text}>Username</Text>
         <TextInput 
@@ -138,13 +204,6 @@ const Profile = ({ navigation }) => {
           onChangeText={setPhoneNumber} 
           style={styles.input}
         />
-        <Text style={styles.text}>Address</Text>
-        <TextInput 
-          placeholder="Address" 
-          value={address} 
-          onChangeText={setAddress} 
-          style={styles.input}
-        />
         <Text style={styles.text}>Email</Text>
         <TextInput 
           placeholder="Email" 
@@ -152,24 +211,40 @@ const Profile = ({ navigation }) => {
           style={styles.input}
           editable={false}
         />
-        <Text style={styles.text}>Rating</Text>
-        <TextInput 
-          placeholder="Rating" 
-          value={rating} 
-          style={styles.input}
-          editable={false}
-        />
+        <Text style={styles.text}>Address</Text>
+        <View style={styles.addressContainer}>
+        <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
+        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={() => locateCurrentPosition(selectedLocation)} />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Update Profile" onPress={handleUpdateProfile} color="#007bff" />
+      {location && (
+        <>
+        <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
+          {selectedLocation && <Marker coordinate={selectedLocation}
+          onPress={() => locateCurrentPosition(selectedLocation)} />}
+        </MapView>
+        </>
+      )}
+
       </View>
-      <LocalNotification />
-      <View>
-      <Button
-        title="Send Push Notification"
-        onPress={testPushNotification}
-      />
-    </View>
+      {/* <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleUpdateProfile} style={styles.button} >
+        <Text style={styles.buttonText}>Update Profile</Text>
+        </TouchableOpacity>
+      </View> */}
+      <View style={styles.columnContainer}>
+        <PressableArea
+                customizedStyle={CommonStyles.pressableSaveCustom}
+              
+                areaPressed={handleUpdateProfile}
+                
+              >
+            <Label
+                content="Update Profile"
+                  customizedStyle={CommonStyles.normalLabel}
+                          />
+          </PressableArea>
+          <LocalNotification />
+        </View>
     </View>
   );
 };
@@ -201,25 +276,66 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
+  button: {
+    backgroundColor: '#007bff', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
   infoText: {
     fontSize: 16,
     marginTop: 10,
+  },
+  avatarContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+    position: 'relative', // This makes it a reference point for absolute positioning
   },
   avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: 20,
   },
-  avatarContainer: {
-    marginBottom: 20,
-    alignItems: 'center',
+  cameraIcon: {
+    position: 'absolute', // Position absolutely within avatarContainer
+    right: 0, // Align to the right edge of avatarContainer
+    top: 0, // Align to the top edge of avatarContainer
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Optional: Darken the icon background slightly
+    borderRadius: 12, // Circular background
+    padding: 6, // Padding around the icon for better touch area
   },
   text: {
-    color: "#5611A1", 
+    color: "#007bff", 
     fontSize: 16, 
     alignSelf: 'flex-start', 
-    marginLeft: 20, 
+    marginLeft: 10, 
+  },
+  addressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  addressInput: {
+    flex: 1,
+    marginRight: 10, // ensures space between text input and icon
+  },
+  locationIcon: {
+    padding: 10,
+    backgroundColor: '#ccc', // Example background color
+    borderRadius: 10,
+  },
+  map: {
+    width: '100%',
+    height: 200, // Example height
+  },
+  columnContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 });
 

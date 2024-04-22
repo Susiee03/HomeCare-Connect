@@ -58,8 +58,8 @@ export async function sendPushNotification(expoPushToken) {
       body: JSON.stringify({
         to: expoPushToken,
         sound: "default",
-        title: "Push Notification",
-        body: "This is a push notification",
+        title: "You got a new review",
+        body: "Poster has reviewed your job",
       }),
     });
     if (!message.ok) {

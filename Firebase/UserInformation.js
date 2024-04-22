@@ -77,3 +77,24 @@ export async function writeUserToDB(data) {
       console.log(err);
     }
   }
+
+  export async function findUserById(db, id) {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("userUid", "==", id));
+  
+    try {
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        console.log("userdoc", userDoc);
+        return userDoc.ref; // Ensure this returns a DocumentReference
+      } else {
+        console.log("No user found with that ID");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      return null;
+    }
+  }
+  

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, View, StyleSheet, Button } from 'react-native';
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db, auth } from '../Firebase/FirebaseSetup';
 import { useNavigation } from '@react-navigation/native';
+import TaskReviewCard from '../Components/TaskReviewCard';
+
+
 
 export default function TaskHistory() {
   const [tasks, setTasks] = useState([]);
@@ -58,30 +61,48 @@ export default function TaskHistory() {
     navigation.navigate("Review", { taskId: taskId });
   };
 
+  const ReviewButton = ({ task, navigation }) => {
+    const handlePress = () => {
+      if (task.hasReview) {
+        navigation.navigate("DisplayReview", { taskId: task.id });
+      } else {
+        navigation.navigate("Review", { taskId: task.id }); // Assuming you have such a screen
+      }
+    };
+  
+    if (!task.hasReview && task.type !== 'Published') {
+      return (
+        <TouchableOpacity style={styles.disabledButton} disabled={true}>
+          <Text style={styles.disabledButtonText}>Waiting for Poster's Review</Text>
+        </TouchableOpacity>
+      );
+    }
+  
+    return (
+      <TouchableOpacity style={styles.button} onPress={handlePress}>
+        <Text style={styles.buttonText}>
+          {task.hasReview ? "Review" : "Write Review"}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+  
+
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Tasks History</Text>
       {tasks.map((task) => (
-        <View key={task.id} style={styles.taskContainer}>
-          <Text style={styles.taskTitle}>{task.title}</Text>
-          <Text>Type: {task.type}</Text>
-          <Text>Cost: {task.cost}</Text>
-          <Text>Address: {task.address}</Text>
-          <Text>Status: {task.status}</Text>
-          {task.type === 'Published' && (
-            task.hasReview ? (
-              <Button
-                title="Review"
-                onPress={() => navigation.navigate("DisplayReview", { taskId: task.id })}
-              />
-            ) : (
-              <Button
-                title="Write Review"
-                onPress={() => handleReviewPress(task.id)}
-              />
-            )
-          )}
-        </View>
+        // <View key={task.id} style={styles.taskContainer}>
+        //   <Text style={styles.taskTitle}>{task.title}</Text>
+        //   <Text>Type: {task.type}</Text>
+        //   <Text>Cost: {task.cost}</Text>
+        //   <Text>Address: {task.address}</Text>
+        //   <Text>Status: {task.status}</Text>
+        //   <ReviewButton task={task} navigation={navigation} />
+        // </View>
+        <TaskReviewCard key={task.id} task={task} navigation={navigation} />
+
       ))}
     </ScrollView>
   );
@@ -107,4 +128,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  button: {
+    backgroundColor: '#007bff', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc', 
+    padding: 10,
+    borderRadius: 5,
+  },
+  disabledButtonText: {
+    color: 'gray',
+    textAlign: 'center',
+  }
 });
+
