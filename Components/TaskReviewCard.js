@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
         borderColor: 'blue', // Blue border color
         borderRadius: 8,
         overflow: 'hidden', // Ensure the border is not clipped
-        marginHorizontal: 10, 
-        marginBottom: 10,
+        marginHorizontal: 16, 
+        marginBottom: 16,
     },
     container: {
         backgroundColor: '#ffffff',
@@ -106,39 +106,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontWeight: 'bold',
     },
-    // cardContainer: {
-    //   flexDirection: 'row',
-    //   justifyContent: 'space-between',
-    //   alignItems: 'center',
-    //   padding: 10,
-    //   borderWidth: 1,
-    //   borderColor: 'black',
-    //   borderRadius: 5,
-    //   marginBottom: 10,
-    // },
-    // contentContainer: {
-    //   flex: 1,
-    // },
-    // actionContainer: {
-    //   marginLeft: 10,
-    // },
-    // taskTitle: {
-    //   fontWeight: 'bold',
-    //   marginBottom: 5,
-    // },
-    // waitingLabel: {
-    //   color: 'gray',
-    //   fontStyle: 'italic',
-    // },
-    // reviewLabel: {
-    //   color: 'white',
-    //   fontWeight: 'bold',
-    //   textAlign: 'center',
-    //   backgroundColor: 'blue',
-    //   paddingVertical: 5,
-    //   paddingHorizontal: 10,
-    //   borderRadius: 5,
-    // },
   
 });
 
