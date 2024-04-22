@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import { auth } from '../Firebase/FirebaseSetup'; 
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { auth } from '../Firebase/FirebaseSetup';
 import { acceptTask, finishTask } from '../Firebase/FirebaseHelper';
 import PressableArea from '../Components/PressableArea';
 import CommonStyles from '../Components/CommonStyles';
@@ -8,7 +9,7 @@ import Label from '../Components/Label';
 
 const TaskDetails = ({ route }) => {
   const { task } = route.params;
-
+  const navigation = useNavigation();
   const [buttonLabel, setButtonLabel] = useState('');
   const [action, setAction] = useState(() => () => {});
 
@@ -17,10 +18,11 @@ const TaskDetails = ({ route }) => {
     if (task.publisherId === currentUserUid) {
       if (task.status === 'in progress') {
         setButtonLabel('Finish Task');
-        console.log(task.id)
-        setAction(() => () => finishTask(task.id).then(() => {
-          Alert.alert('Success', 'Task closed and moved to history successfully');
-        }));
+        setAction(() => () => finishTask(task.id)
+          .then(() => {
+            Alert.alert('Success', 'Task closed and moved to history successfully');
+            navigation.navigate('HomeScreen');
+          }));
       } else if (task.status === 'closed') {
         setButtonLabel('Task Closed');
       } else {
@@ -38,18 +40,13 @@ const TaskDetails = ({ route }) => {
       setButtonLabel('Task Closed');
     }
   }, [task]);
-  
 
   const handlePress = () => {
-    action()
-      .then(() => {
-        
-      })
-      .catch((error) => {
-        Alert.alert('Error', error.message);
-        console.error('Error executing task action:', error);
-      });
+    action().catch((error) => {
+      Alert.alert('Error', error.message);
+    });
   };
+
   const backgroundColorChoose = buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted' ? "grey" : "blue";
 
   return (
@@ -59,34 +56,24 @@ const TaskDetails = ({ route }) => {
       <Text>Cost: ${task.cost}</Text>
       <Text>Address: {task.address}</Text>
       <Text>Status: {task.status}</Text>
-      {/* <TaskCard task={task} handleViewDetails={null} showPressableArea={false} /> */}
       {task.acceptorId && <Text>Accepted By: {task.acceptorId}</Text>}
-      
-        <PressableArea
-              customizedStyle={{  
-                marginTop: 50, 
-                marginLeft: 100,
-                width: 150, 
-                height: 40,
-                backgroundColor: backgroundColorChoose,
-                borderRadius: 5,
-                
-                }}
-              disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
-              areaPressed={handlePress}
-              
-            >
-          <Label
-              content={buttonLabel}
-                customizedStyle={[CommonStyles.normalLabel, {fontSize: 24}]}
-                        />
-        </PressableArea>
-      {/* <Button
-        title={buttonLabel}
-        onPress={handlePress}
+      <PressableArea
+        customizedStyle={{
+          marginTop: 50,
+          marginLeft: 100,
+          width: 150,
+          height: 40,
+          backgroundColor: backgroundColorChoose,
+          borderRadius: 5,
+        }}
         disabled={buttonLabel === 'Not accepted yet' || buttonLabel === 'Accepted'}
-      /> */}
-     
+        areaPressed={handlePress}
+      >
+        <Label
+          content={buttonLabel}
+          customizedStyle={[CommonStyles.normalLabel, {fontSize: 24}]}
+        />
+      </PressableArea>
     </View>
   );
 };
@@ -102,7 +89,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
- 
 });
 
 export default TaskDetails;
