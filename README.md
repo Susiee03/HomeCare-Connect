@@ -41,13 +41,9 @@ allow read, write: if request.auth != null;
 Solarized dark             |  Solarized Ocean
 :-------------------------:|:-------------------------:
 ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/5257c35e-b554-423f-8be5-6fd1427f18c3) | ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/62a32f82-2cce-4329-ba6e-3ae6121b3207)
-
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/014284b4-8173-494e-ae6b-36aecff91bf0)
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/45c79dde-da83-4651-b0af-c278fc3ddf16)
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/4118fdae-f1ac-4b99-bf36-de95e55f47a8)
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/eaa9e4ed-16ac-4304-8fe8-75b9c28837fe)
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/87adcbd4-6eb8-453b-8177-3477d6fe8cd8)
-![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/2467adaf-ace6-46ed-8daf-9f9d156a3ba4)
+![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/014284b4-8173-494e-ae6b-36aecff91bf0) ｜ ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/45c79dde-da83-4651-b0af-c278fc3ddf16)
+![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/4118fdae-f1ac-4b99-bf36-de95e55f47a8) ｜ ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/eaa9e4ed-16ac-4304-8fe8-75b9c28837fe)
+![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/87adcbd4-6eb8-453b-8177-3477d6fe8cd8) ｜ ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/2467adaf-ace6-46ed-8daf-9f9d156a3ba4)
 ![image](https://github.com/Susiee03/HomeCare-Connect/assets/120871272/0e4de20a-e483-4649-80c4-a5f4694712db)
 
 
