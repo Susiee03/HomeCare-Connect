@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     title: {
         marginTop: 100,
         fontSize: 48,
-        fontWeight: 800,
+        fontWeight: "800",
         textAlign: 'center',
     },
     slogan: {

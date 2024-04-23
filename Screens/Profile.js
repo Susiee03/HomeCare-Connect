@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, TextInput, Button, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
 import { auth, db, storage } from "../Firebase/FirebaseSetup";
 import { signOut } from "firebase/auth";
 import { getUserByEmail, updateUserByEmail, deleteUserFromDB } from "../Firebase/UserInformation"; 
@@ -170,86 +170,82 @@ const Profile = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-    <View style={styles.container}>
-      {isUpdatingAvatar || !avatarUri ? (
-        <ImageManager receiveImageURI={(uri) => {
-          setAvatarUri(uri);
-          setIsUpdatingAvatar(false);
-        }} />
-      ) : (
-        <>
-          <Image source={{ uri: avatarUri }} style={styles.avatar} />
-          <TouchableOpacity 
-            style={styles.cameraIcon} 
-            onPress={() => setIsUpdatingAvatar(true)}
-          >
-            <Ionicons name="camera" size={24} color="white" />
-          </TouchableOpacity>
-        </>
-      )}
-    </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.text}>Username</Text>
-        <TextInput 
-          placeholder="Username" 
-          value={username} 
-          onChangeText={setUsername} 
-          style={styles.input}
-        /> 
-        <Text style={styles.text}>Phone Number</Text>
-        <TextInput 
-          placeholder="Phone Number" 
-          value={phoneNumber} 
-          onChangeText={setPhoneNumber} 
-          style={styles.input}
-        />
-        <Text style={styles.text}>Email</Text>
-        <TextInput 
-          placeholder="Email" 
-          value={email} 
-          style={styles.input}
-          editable={false}
-        />
-        <Text style={styles.text}>Address</Text>
-        <View style={styles.addressContainer}>
-        <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
-        <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={() => locateCurrentPosition(selectedLocation)} />
-      </View>
-      {location && (
-        <>
-        <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
-          {selectedLocation && <Marker coordinate={selectedLocation}
-          onPress={() => locateCurrentPosition(selectedLocation)} />}
-        </MapView>
-        </>
-      )}
-
-      </View>
-      {/* <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleUpdateProfile} style={styles.button} >
-        <Text style={styles.buttonText}>Update Profile</Text>
-        </TouchableOpacity>
-      </View> */}
-      <View style={styles.columnContainer}>
-        <PressableArea
-                customizedStyle={CommonStyles.pressableSaveCustom}
-              
-                areaPressed={handleUpdateProfile}
-                
+    <ScrollView style={styles.scrollViewContainer}>
+      <View style={styles.container}>
+        <View style={styles.container}>
+          {isUpdatingAvatar || !avatarUri ? (
+            <ImageManager receiveImageURI={(uri) => {
+              setAvatarUri(uri);
+              setIsUpdatingAvatar(false);
+            }} />
+          ) : (
+            <>
+              <Image source={{ uri: avatarUri }} style={styles.avatar} />
+              <TouchableOpacity 
+                style={styles.cameraIcon} 
+                onPress={() => setIsUpdatingAvatar(true)}
               >
+                <Ionicons name="camera" size={24} color="white" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.text}>Username</Text>
+          <TextInput 
+            placeholder="Username" 
+            value={username} 
+            onChangeText={setUsername} 
+            style={styles.input}
+          /> 
+          <Text style={styles.text}>Phone Number</Text>
+          <TextInput 
+            placeholder="Phone Number" 
+            value={phoneNumber} 
+            onChangeText={setPhoneNumber} 
+            style={styles.input}
+          />
+          <Text style={styles.text}>Email</Text>
+          <TextInput 
+            placeholder="Email" 
+            value={email} 
+            style={styles.input}
+            editable={false}
+          />
+          <Text style={styles.text}>Address</Text>
+          <View style={styles.addressContainer}>
+            <TextInput style={[styles.input, styles.addressInput]} placeholder="Address" value={address} onChangeText={setAddress} />
+            <MaterialIcons name="my-location" size={24} style={styles.locationIcon} onPress={() => locateCurrentPosition(selectedLocation)} />
+          </View>
+          {location && (
+            <>
+              <MapView style={styles.map} initialRegion={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }} onPress={(e) => setSelectedLocation(e.nativeEvent.coordinate)}>
+                {selectedLocation && <Marker coordinate={selectedLocation} onPress={() => locateCurrentPosition(selectedLocation)} />}
+              </MapView>
+            </>
+          )}
+        </View>
+        <View style={styles.columnContainer}>
+          <PressableArea
+            customizedStyle={CommonStyles.pressableSaveCustom}
+            areaPressed={handleUpdateProfile}
+          >
             <Label
-                content="Update Profile"
-                  customizedStyle={CommonStyles.normalLabel}
-                          />
+              content="Update Profile"
+              customizedStyle={CommonStyles.normalLabel}
+            />
           </PressableArea>
           <LocalNotification />
         </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollViewContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -301,8 +297,8 @@ const styles = StyleSheet.create({
   },
   cameraIcon: {
     position: 'absolute', // Position absolutely within avatarContainer
-    right: 0, // Align to the right edge of avatarContainer
-    top: 0, // Align to the top edge of avatarContainer
+    right: 10, // Align to the right edge of avatarContainer
+    top: 10, // Align to the top edge of avatarContainer
     backgroundColor: 'rgba(0, 0, 0, 0.6)', // Optional: Darken the icon background slightly
     borderRadius: 12, // Circular background
     padding: 6, // Padding around the icon for better touch area
