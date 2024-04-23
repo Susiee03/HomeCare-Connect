@@ -11,7 +11,7 @@ https://www.youtube.com/watch?v=JtMiKEZt0rA
 ## Technologies used:
 - React Native for cross-platform mobile app development.
 - Firebase for authentication, database, and storage.
-- Additional libraries and APIs for enhanced features.
+- External APIs for enhanced features.
 
 ## Prepare keys/id as below:
 
