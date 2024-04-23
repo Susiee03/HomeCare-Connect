@@ -9,33 +9,31 @@ const TaskReviewCard = ({ task, navigation }) => {
     if (task.hasReview) {
       navigation.navigate("DisplayReview", { taskId: task.id });
     } else {
-      navigation.navigate("Review", { taskId: task.id });
+      navigation.navigate("Review", { taskId: task.id }); // Assuming you have such a screen
     }
   };
 
+
   return (
     <View style={styles.cardWrapper}>
-        <View style={styles.container}>
+      <View style={styles.container}>
         <Text style={styles.title}>{task.title}</Text>
         <Text>Type: {task.type}</Text>
         <Text>Cost: {task.cost}</Text>
         <Text>Address: {task.address}</Text>
         <Text>Status: {task.status}</Text>
-        {/* <TouchableOpacity style={styles.button} onPress={handlePress}>
-            <Text style={styles.buttonText}>
-            {task.hasReview ? "Review" : "Write Review"}
-            </Text>
-        </TouchableOpacity> */}
-        <PressableArea
-              customizedStyle={CommonStyles.pressableSaveCustom}
-              areaPressed={handlePress}
-            >
-            <Label
-              content={task.hasReview ? "Review" : "Write Review"}
-                customizedStyle={CommonStyles.normalLabel}
-                        />
-            </PressableArea>
-        </View>
+        {!task.hasReview && task.type !== 'Published' ? (
+          <Label content="Waiting for Poster's Review" customizedStyle={{marginTop: 5 ,     
+            color: "grey",
+            fontWeight: "bold",
+            fontSize: 16,}} />
+        ) : (
+          <PressableArea areaPressed={handlePress} customizedStyle={CommonStyles.pressableSaveCustom}>
+            <Label content={task.hasReview ? "Review" : "Write Review"} customizedStyle={CommonStyles.normalLabel} />
+          </PressableArea>
+        )}
+      </View>
+      
     </View>
   );
 };
@@ -46,8 +44,8 @@ const styles = StyleSheet.create({
         borderColor: 'blue', // Blue border color
         borderRadius: 8,
         overflow: 'hidden', // Ensure the border is not clipped
-        marginHorizontal: 10, 
-        marginBottom: 10,
+        marginHorizontal: 16, 
+        marginBottom: 16,
     },
     container: {
         backgroundColor: '#ffffff',
@@ -69,6 +67,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontWeight: 'bold',
     },
+  
 });
 
 export default TaskReviewCard;
